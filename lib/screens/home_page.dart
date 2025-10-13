@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,
+      // Bottom Navigation Bar
       bottomNavigationBar: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -116,7 +117,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 20),
-
             // Genre Selection
             Padding(
               padding: EdgeInsets.only(left: 20),
@@ -158,7 +158,6 @@ class _HomePageState extends State<HomePage> {
               )
             ),
             SizedBox(height: 30),
-
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -170,6 +169,14 @@ class _HomePageState extends State<HomePage> {
                       margin: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x3F000000),
+                            blurRadius: 4,
+                            offset: Offset(4, 4),
+                            spreadRadius: 0
+                          )
+                        ],
                         image: DecorationImage(image: AssetImage(item), fit: BoxFit.cover)
                       ),
                     )).toList(), 
@@ -203,7 +210,7 @@ class _HomePageState extends State<HomePage> {
                     options: CarouselOptions(
                       height: 40,
                       enlargeCenterPage: true,
-                      viewportFraction: 0.5,
+                      // viewportFraction: 0.5,
                       onPageChanged: (index, reason) {
                         setState(() {
                           picIndex = index;
