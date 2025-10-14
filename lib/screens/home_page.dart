@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+// import 'package:provider/provider.dart';
+// import 'package:storytelling_audio_app/services/storage_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,8 +36,27 @@ class _HomePageState extends State<HomePage> {
     'The Fox and the Grapes'
   ];
 
+/*
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchImages();
+    });
+  }
+
+  Future<void> _fetchImages() async {
+    await Provider.of<StorageService>(context, listen: false).fetchImages();
+  }
+*/
+
   @override
   Widget build(BuildContext context) {
+/*
+    final storageService = Provider.of<StorageService>(context);
+    // Fetch Image URLs From The Service
+    final images = storageService.imageUrls;
+*/
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,

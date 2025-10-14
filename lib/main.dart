@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:storytelling_audio_app/services/storage_service.dart';
 import 'firebase_options.dart';
 
 import 'package:storytelling_audio_app/screens/home_page.dart';
@@ -9,7 +11,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => StorageService(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
