@@ -1,36 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/*
+
+Doc: https://firebase.google.com/docs/firestore/query-data/get-data?hl=th
+
+*/
+
 class Story {
-  final String id;
-  final String title;
-  final String coverUrl;
-  final String audioUrl;
-  final List<String> genres;
-  final int timing;
-  final List<Content> content;
+  final String? id;
+  final String? title;
+  final String? coverUrl;
+  final String? audioUrl;
+  final List<String>? genres;
+  final int? timing;
+  final List<Content>? content;
 
   Story ({
-    required this.id,
-    required this.title,
-    required this.coverUrl,
-    required this.audioUrl,
-    required this.genres,
-    required this.timing,
-    required this.content
+    this.id,
+    this.title,
+    this.coverUrl,
+    this.audioUrl,
+    this.genres,
+    this.timing,
+    this.content
   });
 
   // to create a story instance from firestore document
-  factory Story.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  factory Story.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
+    final data = snapshot.data();
     return Story(
-      id: doc.id,
-      title: data['title'] ?? '',
-      coverUrl: data['coverUrl'] ?? '',
-      audioUrl: data['audioUrl'] ?? '',
-      genres: List<String>.from(data['genres'] ?? []),
-      timing: data['timing'] ?? 0,
-      content: (data['content'] as List<dynamic>? ?? [])
-          .map((contentData) => Content.fromMap(contentData))
+      id: data?['id'],
+      title: data?['title'],
+      coverUrl: data?['coverUrl'],
+      audioUrl: data?['audioUrl'],
+      genres: data?['genres'] is Iterable ? List.from(data? ['genres']) : null,
+      timing: data?['timing'],
+      content: (data?['content'] as List<dynamic>?)
+          ?.map((item) => Content.fromFirestore(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -38,78 +44,82 @@ class Story {
   // to convert a story instance to a map for firestore
   Map<String, dynamic> toFirestore() {
     return {
-      'title': title,
-      'coverUrl': coverUrl,
-      'audioUrl': audioUrl,
-      'genres': genres,
-      'timing': timing,
-      'content': content.map((content) => content.toFirestore()).toList(),
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (coverUrl != null) 'coverUrl': coverUrl,
+      if (audioUrl != null) 'audioUrl': audioUrl,
+      if (genres != null) 'genres': genres,
+      if (timing != null) 'timing': timing,
+      if (content != null) 'content': content
     };
   }
 }
 
-// object in the content array
 class Content {
-  final TextLang text;
-  final Style style;
-  final String imageUrl;
+  final TextLang? text;
+  final Style? style;
+  final String? imageUrl;
 
   Content({
-    required this.text,
-    required this.style,
-    required this.imageUrl,
+    this.text,
+    this.style,
+    this.imageUrl
   });
 
-  factory Content.fromMap(Map<String, dynamic> map){
+  factory Content.fromFirestore(Map<String, dynamic> map){
     return Content(
-      text: TextLang.fromMap(map['text'] ?? {}),
-      style: Style.fromMap(map['style'] ?? {}),
-      imageUrl: map['imageUrl'] ?? '',
+      text: map['text'] != null 
+          ? TextLang.fromFirestore(map['text'] as Map<String, dynamic>) : null,
+      style: map['style'] != null 
+          ? Style.fromFirestore(map['style'] as Map<String, dynamic>) : null,
+      imageUrl: map['imageUrl'],
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      'text': text.toFirestore(),
-      'style': style.toFirestore(),
-      'imageUrl': imageUrl,
+      if (text != null) 'text': text!.toFirestore(),
+      if (style != null) 'style': style!.toFirestore(),
+      if (imageUrl != null) 'imageUrl': imageUrl,
     };
   }
 }
 
-// object in the text field
 class TextLang {
-  final String th;
-  final String en;
+  final String? th;
+  final String? en;
 
   TextLang({
-    required this.th,
-    required this.en,
+    this.th,
+    this.en,
   });
 
-  factory TextLang.fromMap(Map<String, dynamic> map) {
+  factory TextLang.fromFirestore(Map<String, dynamic> map) {
     return TextLang(
-      th: map['th'] ?? '',
-      en: map['en'] ?? '',
+      th: map['th'],
+      en: map['en'],
     );
   }
 
   Map<String, dynamic> toFirestore() {
-    return {'th': th, 'en': en};
+    return {
+      if (th != null) 'th': th,
+      if (en != null) 'en': en,
+    };
   }
 }
 
 // object in the style field
 class Style {
-  final String emphasis;
-  final String pitch;
+  final String? emphasis;
+  final String? pitch;
 
   Style({
-    required this.emphasis,
-    required this.pitch,
+    this.emphasis,
+    this.pitch,
   });
 
-  factory Style.fromMap(Map<String, dynamic> map) {
+  factory Style.fromFirestore(Map<String, dynamic> map) {
     return Style(
       emphasis: map['emphasis'] ?? 'none',
       pitch: map['pitch'] ?? 'medium',
@@ -117,6 +127,9 @@ class Style {
   }
 
   Map<String, dynamic> toFirestore() {
-    return {'emphasis': emphasis, 'pitch': pitch};
+    return {
+      if (emphasis != null) 'emphasis': emphasis,
+      if (pitch != null) 'pitch': pitch,
+    };
   }
 }
