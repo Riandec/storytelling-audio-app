@@ -1,3 +1,9 @@
+/*
+
+tutorial: https://youtu.be/hs_lA1WQzaA?si=Uulz9uHBB3Y8U2CM
+
+*/
+
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

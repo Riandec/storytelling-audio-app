@@ -1,12 +1,5 @@
-/*
-
-tutorial: https://www.youtube.com/watch?v=iQOvD0y-xnw&list=LL&index=4
-
-*/
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:storytelling_audio_app/models/story.dart';
 import 'package:storytelling_audio_app/services/firestore_service.dart';
 
 class FetchPage extends StatefulWidget {
