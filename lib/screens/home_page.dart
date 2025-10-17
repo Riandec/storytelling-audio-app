@@ -1,6 +1,8 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:storytelling_audio_app/services/firestore_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,52 +15,24 @@ class _HomePageState extends State<HomePage> {
   int navIndex = 0, genreIndex = 0, picIndex = 0;
   final CarouselSliderController _titleController = CarouselSliderController();
   final CarouselSliderController _imageController = CarouselSliderController();
-
+  // botton color
   final Color active = Color.fromRGBO(0, 85, 255, 1);
   final Color inactive = Colors.white;
-
+  // bottom nav bar list
   final List<String> labels = const ['Home', 'Search', 'Collection', 'Setting'];
   final List<double> labelDx = [0, 0, 0, 0]; // + move to the right, - move to the left
   final double labelDy = 0; // + move down, - move up
-
+  // genres list
   final List<String> genres = const ['All', 'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Inspirational', 'Strategy', 'Thriller'];
-
-  final List<String> images = const [
-    '../assets/images/the-boy-who-cried-wolf.jpg',
-    '../assets/images/the-hare-and-the-tortoise.jpg',
-    '../assets/images/the-fox-and-the-grapes.jpg'
-  ];
-  final List<String> titles = const [
-    'The Boy Who Cried Wolf',
-    'The Hare and the Tortoise',
-    'The Fox and the Grapes'
-  ];
-
-/*
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchImages();
-    });
-  }
-
-  Future<void> _fetchImages() async {
-    await Provider.of<StorageService>(context, listen: false).fetchImages();
-  }
-*/
+  // firebase
+  final FirestoreService firestoreService = FirestoreService();
 
   @override
   Widget build(BuildContext context) {
-/*
-    final storageService = Provider.of<StorageService>(context);
-    // Fetch Image URLs From The Service
-    final images = storageService.imageUrls;
-*/
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,
-      // Bottom Navigation Bar
+      // bottom nav bar
       bottomNavigationBar: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -136,7 +110,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 20),
-            // Genre Selection
+            // genre selection
             Padding(
               padding: EdgeInsets.only(left: 20),
               child: Container(
@@ -177,70 +151,92 @@ class _HomePageState extends State<HomePage> {
               )
             ),
             SizedBox(height: 30),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Carousel for Images
-                  CarouselSlider(
-                    carouselController: _imageController,
-                    items: images.map((item) => Container(
-                      margin: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x3F000000),
-                            blurRadius: 4,
-                            offset: Offset(4, 4),
-                            spreadRadius: 0
-                          )
-                        ],
-                        image: DecorationImage(image: AssetImage(item), fit: BoxFit.cover)
-                      ),
-                    )).toList(), 
-                    options: CarouselOptions(
-                      height: 350,
-                      enlargeCenterPage: true,
-                      viewportFraction: 0.5,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          picIndex = index;
-                        });
-                        _titleController.animateToPage(index);
-                      }
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  // Carousel for Titles
-                  CarouselSlider(
-                    carouselController: _titleController,
-                    items: titles.map((title) => Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
+            // stream data in firestore
+            StreamBuilder<QuerySnapshot>(
+              stream: firestoreService.getStoriesStream(), 
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List storiesList = snapshot.data!.docs;
+                  List<String> titles = [];
+                  List<String> coverUrls = [];
+                  // extract titles
+                  for (var doc in storiesList) {
+                    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                    titles.add(data['title']);
+                    coverUrls.add(data['coverUrl']);
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // carousel for images
+                        CarouselSlider(
+                          carouselController: _imageController,
+                          items: coverUrls.map((coverUrl) => Container(
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0x3F000000),
+                                  blurRadius: 4,
+                                  offset: Offset(4, 4),
+                                  spreadRadius: 0
+                                )
+                              ],
+                              image: DecorationImage(
+                                image: NetworkImage(coverUrl),
+                                fit: BoxFit.cover
+                              )
+                            ),
+                          )).toList(), 
+                          options: CarouselOptions(
+                            height: 350,
+                            enlargeCenterPage: true,
+                            viewportFraction: 0.5,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                picIndex = index;
+                              });
+                              _titleController.animateToPage(index);
+                            }
+                          ),
                         ),
-                      ),
-                    )).toList(), 
-                    options: CarouselOptions(
-                      height: 40,
-                      enlargeCenterPage: true,
-                      // viewportFraction: 0.5,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          picIndex = index;
-                        });
-                        _imageController.animateToPage(index);
-                      }
+                        SizedBox(height: 10),
+                        // carousel for title
+                        CarouselSlider(
+                          carouselController: _titleController,
+                          items: titles.map((title) => Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              title,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black
+                              ),
+                            ),
+                          )).toList(), 
+                          options: CarouselOptions(
+                            height: 40,
+                            enlargeCenterPage: true,
+                            // viewportFraction: 0.5,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                picIndex = index;
+                              });
+                              _imageController.animateToPage(index);
+                            }
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ),
+                  );
+                } else {
+                  return const Text('No data');
+                }
+              }
+            )
           ],
         ),
       ),

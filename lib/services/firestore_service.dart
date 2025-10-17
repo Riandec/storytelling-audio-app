@@ -8,11 +8,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:storytelling_audio_app/models/story.dart';
 
 class FirestoreService {
-  // final FirebaseFirestore _db = FirebaseFirestore.instance;
-  // late final CollectionReference<Story> _storiesRef;
   final CollectionReference stories = FirebaseFirestore.instance.collection('Stories');
 
   /* custom object version
+  
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  late final CollectionReference<Story> _storiesRef;
 
   FirestoreService() {
     _storiesRef = _db.collection('Stories').withConverter<Story>(
