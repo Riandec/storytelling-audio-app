@@ -28,6 +28,11 @@ class _HomePageState extends State<HomePage> {
   final FirestoreService firestoreService = FirestoreService();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -95,79 +100,80 @@ class _HomePageState extends State<HomePage> {
             ]
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 20, left: 20),
-              child: Text(
-                "Hi, little one\nLet's explore our stories",
-                style: TextStyle(
-                  fontFamily: 'Darumadrop One',
-                  fontSize: 32,
-                  height: 1.25
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // page title
+              Padding(
+                padding: EdgeInsets.only(top: 70, left: 20),
+                child: Text(
+                  "Hi, little one\nLet's explore our stories",
+                  style: TextStyle(
+                    fontFamily: 'Darumadrop One',
+                    fontSize: 32,
+                    height: 1.25
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            // genre selection
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Container(
-                height: 30,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: genres.length,
-                  itemBuilder: (context, index) {
-                    bool isSelected = genreIndex == index;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          genreIndex = index;
-                        });
-                      },           
-                      child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(20),
-                          color: isSelected ? active : inactive,
-                        ),
-                        child: Center(
-                          child: Text(
-                            genres[index], 
-                            style: TextStyle(
-                              fontSize: 12, 
-                              fontWeight: FontWeight.bold, 
-                              color: isSelected ? Colors.white : Colors.black
+              SizedBox(height: 30),
+              // genre selection
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: SizedBox(
+                  height: 30,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: genres.length,
+                    itemBuilder: (context, index) {
+                      bool isSelected = genreIndex == index;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            genreIndex = index;
+                          });
+                        },           
+                        child: Container(
+                          margin: EdgeInsets.only(right: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: isSelected ? active : inactive,
+                          ),
+                          child: Center(
+                            child: Text(
+                              genres[index], 
+                              style: TextStyle(
+                                fontFamily: 'SF Pro',
+                                fontSize: 12, 
+                                // fontWeight: FontWeight.bold, 
+                                color: isSelected ? Colors.white : Colors.black
+                              )
                             )
                           )
-                        )
-                      ),
-                    );
-                  }
-                ),
-              )
-            ),
-            SizedBox(height: 30),
-            // stream data in firestore
-            StreamBuilder<QuerySnapshot>(
-              stream: firestoreService.getStoriesStream(), 
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List storiesList = snapshot.data!.docs;
-                  List<String> titles = [];
-                  List<String> coverUrls = [];
-                  // extract titles
-                  for (var doc in storiesList) {
-                    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                    titles.add(data['title']);
-                    coverUrls.add(data['coverUrl']);
-                  }
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                      );
+                    }
+                  ),
+                )
+              ),
+              SizedBox(height: 30),
+              // stream data in firestore
+              StreamBuilder<QuerySnapshot>(
+                stream: firestoreService.getStoriesStream(), 
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List storiesList = snapshot.data!.docs;
+                    List<String> titles = [];
+                    List<String> coverUrls = [];
+                    // extract titles
+                    for (var doc in storiesList) {
+                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                      titles.add(data['title']);
+                      coverUrls.add(data['coverUrl']);
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // carousel for images
                         CarouselSlider(
@@ -211,6 +217,7 @@ class _HomePageState extends State<HomePage> {
                             child: Text(
                               title,
                               style: TextStyle(
+                                fontFamily: 'SF Pro',
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black
@@ -229,16 +236,92 @@ class _HomePageState extends State<HomePage> {
                             }
                           ),
                         ),
+                        SizedBox(height: 20),
+                        // feature title
+                        Padding(
+                          padding: EdgeInsets.only(top: 20, left: 20),
+                          child: Text(
+                            "You may also like these stories",
+                            style: TextStyle(
+                              fontFamily: 'SF Pro',
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        // recommended
+                        Padding(
+                          padding: EdgeInsets.only(left: 20, bottom: 100),
+                          child: SizedBox(
+                            height: 220,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 3,
+                              itemBuilder:(context, index) {
+                                return Padding(
+                                  padding: EdgeInsets.only(right: 17),
+                                  child: Column (
+                                    children: [
+                                      Container(
+                                        width: 113,
+                                        height: 170,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color(0x3F000000),
+                                              blurRadius: 4,
+                                              offset: Offset(2, 2),
+                                              spreadRadius: 0,
+                                            )
+                                          ],
+                                          image: DecorationImage(
+                                            image: NetworkImage(coverUrls[index]),
+                                            fit: BoxFit.cover
+                                          )
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      SizedBox(
+                                        width: 113,
+                                        height: 40,
+                                        child: Text(
+                                          titles[index],
+                                          style: TextStyle(
+                                            fontFamily: 'SF Pro',
+                                            fontSize: 12,
+                                            height: 1.25
+                                          ),
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      ),
+                                      SizedBox(height: 10),
+                                      
+                                    ],
+                                  )
+                                );
+                              },
+                            )
+                          )
+                        )
                       ],
-                    ),
-                  );
-                } else {
-                  return const Text('No data');
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.black),
+                      )
+                    );
+                  }
                 }
-              }
-            )
-          ],
-        ),
+              ),
+            ],
+          ),
+        )
       ),
     );
   }

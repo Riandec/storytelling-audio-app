@@ -75,6 +75,12 @@ flutter:
     - family: Darumadrop One
       fonts:
         - asset: assets/fonts/DarumadropOne-Regular.ttf
+    - family: SF Pro
+      fonts:
+        - asset: assets/fonts/SFPRODISPLAYREGULAR.otf
+        - asset: assets/fonts/SFPRODISPLAYBOLD.otf
+        - asset: assets/fonts/SFPRODISPLAYLIGHTITALIC.otf
+          style: italic
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
