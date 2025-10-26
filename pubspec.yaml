@@ -78,7 +78,9 @@ flutter:
     - family: SF Pro
       fonts:
         - asset: assets/fonts/SFPRODISPLAYREGULAR.otf
+          weight: 400
         - asset: assets/fonts/SFPRODISPLAYBOLD.otf
+          weight: 700
         - asset: assets/fonts/SFPRODISPLAYLIGHTITALIC.otf
           style: italic
   #   - images/a_dot_burr.jpeg

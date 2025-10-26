@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:storytelling_audio_app/services/firestore_service.dart';
+import 'package:storytelling_audio_app/widgets/stream_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,9 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int navIndex = 0, genreIndex = 0, picIndex = 0;
-  final CarouselSliderController _titleController = CarouselSliderController();
-  final CarouselSliderController _imageController = CarouselSliderController();
+  int navIndex = 0, genreIndex = 0;
   // botton color
   final Color active = Color.fromRGBO(0, 85, 255, 1);
   final Color inactive = Colors.white;
@@ -24,8 +20,6 @@ class _HomePageState extends State<HomePage> {
   final double labelDy = 0; // + move down, - move up
   // genres list
   final List<String> genres = const ['All', 'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Inspirational', 'Strategy', 'Thriller'];
-  // firebase
-  final FirestoreService firestoreService = FirestoreService();
 
   @override
   void initState() {
@@ -146,7 +140,6 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                 fontFamily: 'SF Pro',
                                 fontSize: 12, 
-                                // fontWeight: FontWeight.bold, 
                                 color: isSelected ? Colors.white : Colors.black
                               )
                             )
@@ -158,167 +151,10 @@ class _HomePageState extends State<HomePage> {
                 )
               ),
               SizedBox(height: 30),
-              // stream data in firestore
-              StreamBuilder<QuerySnapshot>(
-                stream: firestoreService.getStoriesStream(), 
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List storiesList = snapshot.data!.docs;
-                    List<String> titles = [];
-                    List<String> coverUrls = [];
-                    // extract titles
-                    for (var doc in storiesList) {
-                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                      titles.add(data['title']);
-                      coverUrls.add(data['coverUrl']);
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // carousel for images
-                        CarouselSlider(
-                          carouselController: _imageController,
-                          items: coverUrls.map((coverUrl) => Container(
-                            margin: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x3F000000),
-                                  blurRadius: 4,
-                                  offset: Offset(4, 4),
-                                  spreadRadius: 0
-                                )
-                              ],
-                              image: DecorationImage(
-                                image: NetworkImage(coverUrl),
-                                fit: BoxFit.cover
-                              )
-                            ),
-                          )).toList(), 
-                          options: CarouselOptions(
-                            height: 350,
-                            enlargeCenterPage: true,
-                            viewportFraction: 0.5,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                picIndex = index;
-                              });
-                              _titleController.animateToPage(index);
-                            }
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        // carousel for title
-                        CarouselSlider(
-                          carouselController: _titleController,
-                          items: titles.map((title) => Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              title,
-                              style: TextStyle(
-                                fontFamily: 'SF Pro',
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black
-                              ),
-                            ),
-                          )).toList(), 
-                          options: CarouselOptions(
-                            height: 40,
-                            enlargeCenterPage: true,
-                            // viewportFraction: 0.5,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                picIndex = index;
-                              });
-                              _imageController.animateToPage(index);
-                            }
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        // feature title
-                        Padding(
-                          padding: EdgeInsets.only(top: 20, left: 20),
-                          child: Text(
-                            "You may also like these stories",
-                            style: TextStyle(
-                              fontFamily: 'SF Pro',
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        // recommended
-                        Padding(
-                          padding: EdgeInsets.only(left: 20, bottom: 100),
-                          child: SizedBox(
-                            height: 220,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 3,
-                              itemBuilder:(context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(right: 17),
-                                  child: Column (
-                                    children: [
-                                      Container(
-                                        width: 113,
-                                        height: 170,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0x3F000000),
-                                              blurRadius: 4,
-                                              offset: Offset(2, 2),
-                                              spreadRadius: 0,
-                                            )
-                                          ],
-                                          image: DecorationImage(
-                                            image: NetworkImage(coverUrls[index]),
-                                            fit: BoxFit.cover
-                                          )
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      SizedBox(
-                                        width: 113,
-                                        height: 40,
-                                        child: Text(
-                                          titles[index],
-                                          style: TextStyle(
-                                            fontFamily: 'SF Pro',
-                                            fontSize: 12,
-                                            height: 1.25
-                                          ),
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                        )
-                                      ),
-                                      SizedBox(height: 10),
-                                      
-                                    ],
-                                  )
-                                );
-                              },
-                            )
-                          )
-                        )
-                      ],
-                    );
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.black),
-                      )
-                    );
-                  }
-                }
-              ),
+              // stream data section
+              AllStoriesSection(),
+              UnreadStoriesSection(),
+              PopularStoriesSection(),
             ],
           ),
         )
