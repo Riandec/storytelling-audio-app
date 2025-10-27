@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:storytelling_audio_app/widgets/stream_section.dart';
+import 'package:storytelling_audio_app/screens/search_page.dart';
+import 'package:storytelling_audio_app/screens/collection_page.dart';
+import 'package:storytelling_audio_app/screens/setting_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,7 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int navIndex = 0, genreIndex = 0;
-  // botton color
+  // button color
   final Color active = Color.fromRGBO(0, 85, 255, 1);
   final Color inactive = Colors.white;
   // bottom nav bar list
@@ -28,6 +31,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> pages = [
+      _buildHomePage(),
+      SearchPage(),
+      CollectionPage(),
+      SettingPage(),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,
@@ -46,7 +56,9 @@ class _HomePageState extends State<HomePage> {
               Icon(Icons.settings, size: 30 ,color: navIndex == 3 ? active : inactive),
             ],
             index: navIndex,
-            onTap: (i) => setState(() => navIndex = i),
+            onTap: (i) { 
+              setState(() => navIndex = i);
+            }
           ),
           Positioned(
             left: 0,
@@ -80,85 +92,89 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(180, 225, 255, 1),
-              Color.fromRGBO(243, 255, 181, 1),
-              Colors.white,
-            ]
-          ),
+      body: pages[navIndex],
+    );
+  }
+
+  Widget _buildHomePage() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.fromRGBO(180, 225, 255, 1),
+            Color.fromRGBO(243, 255, 181, 1),
+            Colors.white,
+          ]
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // page title
-              Padding(
-                padding: EdgeInsets.only(top: 70, left: 20),
-                child: Text(
-                  "Hi, little one\nLet's explore our stories",
-                  style: TextStyle(
-                    fontFamily: 'Darumadrop One',
-                    fontSize: 32,
-                    height: 1.25
-                  ),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // page title
+            Padding(
+              padding: EdgeInsets.only(top: 70, left: 20),
+              child: Text(
+                "Hi, little one\nLet's explore our stories",
+                style: TextStyle(
+                  fontFamily: 'Darumadrop One',
+                  fontSize: 32,
+                  height: 1.25
                 ),
               ),
-              SizedBox(height: 30),
-              // genre selection
-              Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: SizedBox(
-                  height: 30,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: genres.length,
-                    itemBuilder: (context, index) {
-                      bool isSelected = genreIndex == index;
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            genreIndex = index;
-                          });
-                        },           
-                        child: Container(
-                          margin: EdgeInsets.only(right: 10),
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: isSelected ? active : inactive,
-                          ),
-                          child: Center(
-                            child: Text(
-                              genres[index], 
-                              style: TextStyle(
-                                fontFamily: 'SF Pro',
-                                fontSize: 12, 
-                                color: isSelected ? Colors.white : Colors.black
-                              )
+            ),
+            SizedBox(height: 30),
+            // genre selection
+            Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: SizedBox(
+                height: 30,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: genres.length,
+                  itemBuilder: (context, index) {
+                    bool isSelected = genreIndex == index;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          genreIndex = index;
+                        });
+                      },           
+                      child: Container(
+                        margin: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: isSelected ? active : inactive,
+                        ),
+                        child: Center(
+                          child: Text(
+                            genres[index], 
+                            style: TextStyle(
+                              fontFamily: 'SF Pro',
+                              fontSize: 12, 
+                              color: isSelected ? Colors.white : Colors.black
                             )
                           )
-                        ),
-                      );
-                    }
-                  ),
-                )
-              ),
-              SizedBox(height: 30),
-              // stream data section
-              AllStoriesSection(),
-              UnreadStoriesSection(),
-              PopularStoriesSection(),
-            ],
-          ),
-        )
-      ),
+                        )
+                      ),
+                    );
+                  }
+                ),
+              )
+            ),
+            SizedBox(height: 30),
+            // stream data section
+            AllStoriesSection(),
+            UnreadStoriesSection(),
+            PopularStoriesSection(),
+          ],
+        ),
+      )
     );
   }
 }
