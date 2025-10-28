@@ -44,10 +44,15 @@ class _SearchPageState extends State<SearchPage> {
     }
     final result = await FirebaseFirestore.instance
       .collection('Stories')
-      .where('title', isGreaterThanOrEqualTo: query)
-      .where('title', isLessThanOrEqualTo: '$query\uf8ff')
+      // .where('title', isGreaterThanOrEqualTo: query)
+      // .where('title', isLessThanOrEqualTo: '$query\uf8ff')
       .get();
-    return result.docs;
+    // case insensitive
+    String queryLower = query.toLowerCase();
+    return result.docs.where((doc){
+      String title = (doc.data()['title'] as String).toLowerCase();
+      return title.contains(queryLower);
+    }).toList();
   }
 
   /* 
@@ -168,127 +173,138 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                // suggestion
-                FutureBuilder<List<QueryDocumentSnapshot>>(
-                  future: searchStories(queryKeyword), 
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    }                
-                    final docs = snapshot.data!;
-                    if (docs.isEmpty) {
-                      return SizedBox.shrink();
-                    }
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.black)
-                      ),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: docs.length,
-                        itemBuilder: (context, index) {
-                          final data = docs[index].data() as Map<String, dynamic>;
-                          final title = data['title'];
-                          return ListTile(
-                            title: Text(
-                              title,
-                              style: TextStyle(
-                                fontFamily: 'SF Pro'
-                              ),
-                            ),
-                            onTap: () async {
-                              addToLatestSearch(title);
-                              setState(() {
-                                searchController.clear();
-                                queryKeyword = '';
-                              });
-                            },
-                          );
-                        },
-                      )
-                    );
-                  }
-                ),
-                // feature title
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Latest Search', 
-                      style: TextStyle(
-                        fontFamily: 'SF Pro',
-                        fontWeight: FontWeight.bold
-                      )
-                    ),
-                    TextButton(
-                      onPressed: clearAllSearches,
-                      child: Text(
-                        'Clear All',
-                        style: TextStyle(
-                          fontFamily: 'SF Pro',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                // latest search
                 Expanded(
-                  child:ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: latestSearches.length,
-                    itemBuilder: (context, index) {
-                      final keyword = latestSearches[index];
-                      return ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                        leading: Container(
-                          width: 25,
-                          height: 25,
-                          padding: EdgeInsets.only(right: 1),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color.fromRGBO(217, 217, 217, 1),
+                  child: Stack(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // feature title
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Latest Search', 
+                                style: TextStyle(
+                                  fontFamily: 'SF Pro',
+                                  fontWeight: FontWeight.bold
+                                )
+                              ),
+                              TextButton(
+                                onPressed: clearAllSearches,
+                                child: Text(
+                                  'Clear All',
+                                  style: TextStyle(
+                                    fontFamily: 'SF Pro',
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          child: Icon(
-                            Icons.history,
-                            color: Colors.black,
-                            size: 20
+                          // latest search
+                          Expanded(
+                            child:ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: latestSearches.length,
+                              itemBuilder: (context, index) {
+                                final keyword = latestSearches[index];
+                                return ListTile(
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                                  leading: Container(
+                                    width: 25,
+                                    height: 25,
+                                    padding: EdgeInsets.only(right: 1),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Color.fromRGBO(217, 217, 217, 1),
+                                    ),
+                                    child: Icon(
+                                      Icons.history,
+                                      color: Colors.black,
+                                      size: 20
+                                    ),
+                                  ),
+                                  title: Text(
+                                    keyword,
+                                    style: TextStyle(
+                                      fontFamily: 'SF Pro',
+                                      fontSize: 15
+                                    ),
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () => removeSearch(keyword), 
+                                    icon: Container(
+                                      width: 25,
+                                      height: 25,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color.fromRGBO(217, 217, 217, 1),
+                                      ),
+                                      child: Icon(
+                                        Icons.clear,
+                                        color: Colors.black,
+                                        size: 18
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    searchController.text =keyword;
+                                    debounceSearch(keyword);
+                                  },
+                                );
+                              }
+                            )
                           ),
-                        ),
-                        title: Text(
-                          keyword,
-                          style: TextStyle(
-                            fontFamily: 'SF Pro',
-                            fontSize: 15
-                          ),
-                        ),
-                        trailing: IconButton(
-                          onPressed: () => removeSearch(keyword), 
-                          icon: Container(
-                            width: 25,
-                            height: 25,
+                        ]
+                      ),
+                      // suggestion
+                      FutureBuilder<List<QueryDocumentSnapshot>>(
+                        future: searchStories(queryKeyword), 
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          final docs = snapshot.data!;
+                          if (docs.isEmpty) {
+                            return SizedBox.shrink();
+                          }
+                          return Container(
                             decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color.fromRGBO(217, 217, 217, 1),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.black)
                             ),
-                            child: Icon(
-                              Icons.clear,
-                              color: Colors.black,
-                              size: 18
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          searchController.text =keyword;
-                          debounceSearch(keyword);
-                        },
-                      );
-                    }
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: docs.length,
+                              itemBuilder: (context, index) {
+                                final data = docs[index].data() as Map<String, dynamic>;
+                                final title = data['title'];
+                                return ListTile(
+                                  title: Text(
+                                    title,
+                                    style: TextStyle(
+                                      fontFamily: 'SF Pro'
+                                    ),
+                                  ),
+                                  onTap: () async {
+                                    addToLatestSearch(title);
+                                    setState(() {
+                                      searchController.clear();
+                                      queryKeyword = '';
+                                    });
+                                  },
+                                );
+                              },
+                            )
+                          );
+                        }
+                      ),
+                    ]
                   )
                 )
               ],
@@ -299,12 +315,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-
-/*
-
-Unfinished
-
-- suggestion ไม่ให้ดัน latest search ลงมา
-- search by ignorcase
-
-*/
