@@ -36,14 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   firebase_core: ^4.1.1
   cloud_firestore: ^6.0.2
-  firebase_auth: ^6.1.0
-  firebase_storage: ^13.0.2
-  cloud_functions: ^6.0.2
   curved_navigation_bar: ^1.0.6
-  http: ^1.5.0
   carousel_slider: ^5.1.1
   provider: ^6.1.5+1
-  file_picker: ^10.3.3
   shared_preferences: ^2.5.3
 
 dev_dependencies:
@@ -70,7 +65,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
+    - assets/images/
 
   fonts:
     - family: Darumadrop One
@@ -84,6 +79,9 @@ flutter:
           weight: 700
         - asset: assets/fonts/SFPRODISPLAYLIGHTITALIC.otf
           style: italic
+    - family: Rubik Scribble
+      fonts:
+        - asset: assets/fonts/RubikScribble-Regular.ttf
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

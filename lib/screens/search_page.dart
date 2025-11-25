@@ -42,11 +42,7 @@ class _SearchPageState extends State<SearchPage> {
     if (query.isEmpty) {
       return [];
     }
-    final result = await FirebaseFirestore.instance
-      .collection('Stories')
-      // .where('title', isGreaterThanOrEqualTo: query)
-      // .where('title', isLessThanOrEqualTo: '$query\uf8ff')
-      .get();
+    final result = await FirebaseFirestore.instance.collection('Stories').get();
     // case insensitive
     String queryLower = query.toLowerCase();
     return result.docs.where((doc){
@@ -315,3 +311,11 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
+
+/*
+
+Unfinised
+
+- tap cover to navigate to story details
+
+*/
