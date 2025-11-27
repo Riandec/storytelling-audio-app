@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RatingPage extends StatefulWidget {
-  final String storyId;
-  const RatingPage({super.key, required this.storyId});
-  // const RatingPage({super.key});
+  // final String storyId;
+  // const RatingPage({super.key, required this.storyId});
+  const RatingPage({super.key});
 
   @override
   State<RatingPage> createState() => _RatingPageState();
@@ -23,6 +23,7 @@ class _RatingPageState extends State<RatingPage> {
   };
   final CollectionReference storyRef = FirebaseFirestore.instance.collection('Stories');
 
+  /*
   // send rating to firestore
   Future<void> submitRating() async {
     if (selectedRate == 0) {
@@ -57,6 +58,7 @@ class _RatingPageState extends State<RatingPage> {
       print('Error: $e');
     }
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +139,8 @@ class _RatingPageState extends State<RatingPage> {
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(horizontal: 25)
               ),
-              onPressed: submitRating, 
+              // onPressed: submitRating,
+              onPressed: (){},  
               child: Text('Submit')
             )
           ],

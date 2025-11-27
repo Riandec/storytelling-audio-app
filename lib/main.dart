@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:storytelling_audio_app/screens/home_page.dart';
+import 'package:storytelling_audio_app/screens/story_details_page.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       debugShowCheckedModeBanner: true,
-      home: HomePage(),
+      home: StoryDetailsPage(),
     );
   }
 }
