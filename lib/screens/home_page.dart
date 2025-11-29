@@ -221,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => StoryDetailsPage(storyData: stories)
+                                builder: (context) => StoryDetailsPage(storyId: doc.id ,storyData: stories)
                               )
                             );
                           },
@@ -333,7 +333,8 @@ class _HomePageState extends State<HomePage> {
                           scrollDirection: Axis.horizontal,
                           itemCount: data.length,
                           itemBuilder: (context, index) {
-                            final stories = data[index];
+                            final doc = data[index];
+                            final stories = doc.data() as Map<String, dynamic>;
                             return Padding(
                               padding: EdgeInsets.only(right: 17),
                               child: Column(
@@ -344,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => StoryDetailsPage(storyData: stories.data() as Map<String, dynamic>)
+                                          builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: stories)
                                         )
                                       );
                                     },
@@ -436,7 +437,8 @@ class _HomePageState extends State<HomePage> {
                           scrollDirection: Axis.horizontal,
                           itemCount: data.length > 3 ? 3 : data.length,
                           itemBuilder: (context, index) {
-                            final stories = data[index];
+                            final doc = data[index];
+                            final stories = doc.data() as Map<String, dynamic>;
                             return Padding(
                               padding: EdgeInsets.only(right: 17),
                               child: Column(
@@ -447,7 +449,7 @@ class _HomePageState extends State<HomePage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => StoryDetailsPage(storyData: stories.data() as Map<String, dynamic>)
+                                          builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: stories)
                                         )
                                       );
                                     },

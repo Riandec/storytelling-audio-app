@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:storytelling_audio_app/screens/rating_page.dart';
 
 class ListeningPage extends StatefulWidget {
+  final String storyId;
   final Map<String, dynamic> storyData;
-  const ListeningPage({super.key, required this.storyData});
+  const ListeningPage({super.key, required this.storyId , required this.storyData});
 
   @override
   State<ListeningPage> createState() => _ListeningPageState();
@@ -117,30 +119,48 @@ class _ListeningPageState extends State<ListeningPage> {
                   )
                 ),
                 Text(
-                  'Page ${currentPage+1}/${widget.storyData['content'].length}',
+                  'Page ${currentPage+1}/$totalPages',
                   style: TextStyle(
                     fontFamily: 'SF Pro',
                     fontSize: 22,
-                    color: Colors.white
+                    color: Colors.black
                   ),
                 ),
                 IconButton(
-                  onPressed: currentPage < widget.storyData['content'].length-1 ? (){
+                  /*
+                  onPressed: currentPage < totalPages-1 ? (){
                     setState(() {
                       currentPage++;
                     });
                   }
                   : null, 
+                  */
+
+                  // to display the rating page before supporting audio play
+                  onPressed: (){
+                    setState(() {
+                      if (currentPage < totalPages - 1) {
+                        currentPage++;
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RatingPage(storyId: widget.storyId)
+                          )
+                        );
+                      }
+                    });
+                  },
                   icon: Container(
                     height: 35,
                     width: 35,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(currentPage < widget.storyData['content'].length - 1 ? 0.4 : 0.2),
+                      color: Colors.black.withOpacity(currentPage < totalPages-1 ? 0.4 : 0.2),
                       shape: BoxShape.circle
                     ),
                     child: Icon(
                       Icons.arrow_forward_rounded, 
-                      color: Colors.white.withOpacity(currentPage < widget.storyData['content'].length - 1 ? 1.0 : 0.6), 
+                      color: Colors.white.withOpacity(currentPage < totalPages-1 ? 1.0 : 0.6), 
                       size: 30
                     )
                   )

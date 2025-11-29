@@ -4,8 +4,9 @@ import 'package:image_pixels/image_pixels.dart';
 import 'package:storytelling_audio_app/screens/listening_page.dart';
 
 class StoryDetailsPage extends StatefulWidget {
+  final String storyId;
   final Map<String, dynamic> storyData;
-  const StoryDetailsPage({super.key, required this.storyData});
+  const StoryDetailsPage({super.key, required this.storyId, required this.storyData});
 
   @override
   State<StoryDetailsPage> createState() => _StoryDetailsPageState();
@@ -359,7 +360,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     Navigator.push(
                       context, 
                       MaterialPageRoute(
-                        builder: (context) => ListeningPage(storyData: widget.storyData)
+                        builder: (context) => ListeningPage(storyId: widget.storyId , storyData: widget.storyData)
                       )
                     );
                   }, 

@@ -279,16 +279,15 @@ class _SearchPageState extends State<SearchPage> {
                               itemCount: docs.length,
                               itemBuilder: (context, index) {
                                 final data = docs[index].data() as Map<String, dynamic>;
-                                final title = data['title'];
                                 return ListTile(
                                   title: Text(
-                                    title,
+                                    data['title'],
                                     style: TextStyle(
                                       fontFamily: 'SF Pro'
                                     ),
                                   ),
                                   onTap: () async {
-                                    addToLatestSearch(title);
+                                    addToLatestSearch(data['title']);
                                     setState(() {
                                       searchController.clear();
                                       queryKeyword = '';
