@@ -1,20 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_pixels/image_pixels.dart';
+import 'package:storytelling_audio_app/screens/listening_page.dart';
 
 class StoryDetailsPage extends StatefulWidget {
-  const StoryDetailsPage({super.key});
+  final Map<String, dynamic> storyData;
+  const StoryDetailsPage({super.key, required this.storyData});
 
   @override
   State<StoryDetailsPage> createState() => _StoryDetailsPageState();
 }
 
 class _StoryDetailsPageState extends State<StoryDetailsPage> {
-  final String _imagePath = 'assets/images/ChatGPT Image 11 ก.ค. 2568 15_21_12.png';
   // state for gradient colors
   // set a default color, in case the color extraction is not complete
   Color _startColor = Colors.grey.shade800;
   Color _endColor = Colors.grey.shade600;
+  // default heart button
+  bool _isLiked = false;
+  IconData _heartShape = Icons.favorite_outline_rounded;
+  Color _heartColor = Colors.black.withOpacity(0.4);
 
   /*
   @override
@@ -45,8 +50,8 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.asset(
-                      _imagePath,
+                    Image.network(
+                      widget.storyData['content'][0]['imageUrl'],
                       fit: BoxFit.cover,
                     ),
                     // blur effect
@@ -88,6 +93,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
               ),
             ],
           ),
+          // top bar
           Positioned(
             top: 50,
             left: 20,
@@ -96,12 +102,14 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: (){}, 
+                  onPressed: (){
+                    Navigator.pop(context);
+                  }, 
                   icon: Container(
                     height: 35,
                     width: 35,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.black.withOpacity(0.4),
                       shape: BoxShape.circle
                     ),
                     child: Icon(
@@ -117,22 +125,28 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     fontFamily: 'SF Pro',
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
-                    color: Colors.white
+                    color: Colors.black
                   ),
                 ),
                 IconButton(
-                  onPressed: (){}, 
+                  onPressed: (){
+                    setState(() {
+                      _isLiked = !_isLiked;
+                      _heartShape = _isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded;
+                      _heartColor = _isLiked ? Colors.red : Colors.black.withOpacity(0.4);
+                    });
+                  }, 
                   icon: Container(
                     height: 35,
                     width: 35,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.4),
+                      color: _heartColor,
                       shape: BoxShape.circle
                     ),
                     child: Padding(
                       padding: EdgeInsets.only(top: 2),
                       child: Icon(
-                        Icons.favorite_outline_rounded, 
+                        _heartShape, 
                         color: Colors.white, 
                         size: 27
                       ),
@@ -142,61 +156,59 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
               ],
             ),
           ),
+          // details 
           Positioned(
             top: 420,
-            left: 55,
+            left: 30,
+            right: 30,
             child: Column(
               children: [
-                Text(
-                  'The Hare and\nthe Tortoise',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Playfair Display',
-                    fontSize: 46,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                    letterSpacing: 1,
-                    color: Colors.white
+                // title
+                SizedBox(
+                  width: 350,
+                  child: Text(
+                    widget.storyData['title'],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Playfair Display',
+                      fontSize: 46,
+                      fontWeight: FontWeight.bold,
+                      height: 1,
+                      letterSpacing: 1,
+                      color: Colors.black
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 15),
+                // genres and rating
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(20)
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                        child: Text(
-                          'Adventure',
-                          style: TextStyle(
-                            fontFamily: 'SF Pro',
-                            fontSize: 12,
-                            color: Colors.white
+                    ...List.generate(widget.storyData['genres'].length, (index) {
+                      return Padding(
+                        padding: EdgeInsets.only(right: 6),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(20)
                           ),
-                        )
-                      )
-                    ),
-                    SizedBox(width: 6),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(20)
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                        child: Text(
-                          'Fantasy',
-                          style: TextStyle(
-                            fontFamily: 'SF Pro',
-                            fontSize: 12,
-                            color: Colors.white
-                          ),
-                        )
-                      )
-                    ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                            child: Text(
+                              widget.storyData['genres'][index].toString(),
+                              style: TextStyle(
+                                fontFamily: 'SF Pro',
+                                fontSize: 12,
+                                color: Colors.white,
+                                letterSpacing: 1
+                              ),
+                            )
+                          )
+                        ),
+                      );
+                    }),
                     SizedBox(width: 6),
                     Icon(
                       Icons.star_rounded,
@@ -204,132 +216,129 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     ),
                     SizedBox(width: 3),
                     Text(
-                      '4.9 stars',
+                      '${widget.storyData['rating'].toStringAsFixed(1)} stars',
                       style: TextStyle(
                         fontFamily: 'SF Pro',
                         fontSize: 12,
-                        color: Colors.white
+                        color: Colors.black
                       ),
                     )
                   ],
                 ),
                 SizedBox(height: 15),
+                // stats
                 Container(
-                  width: 300,
-                  height: 1.5,
+                  width: 320,
+                  height: 35,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white
+                    border: Border(
+                      top: BorderSide(color: Colors.black, width: 1.5),
+                      bottom: BorderSide(color: Colors.black, width: 1.5),
+                    ),
                   ),
-                ),
-                SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.timer_outlined,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      '15 mins+',
-                      style: TextStyle(
-                        fontFamily: 'SF Pro',
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        Icons.timer_outlined,
+                        size: 20,
+                        color: Colors.black,
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    Icon(
-                      Icons.menu_book_rounded,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      '92 reads',
-                      style: TextStyle(
-                        fontFamily: 'SF Pro',
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
+                      SizedBox(width: 5),
+                      Text(
+                        '${widget.storyData['timing']} mins',
+                        style: TextStyle(
+                          fontFamily: 'SF Pro',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    Icon(
-                      Icons.favorite_outline_rounded,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      '57 likes',
-                      style: TextStyle(
-                        fontFamily: 'SF Pro',
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
+                      SizedBox(width: 15),
+                      Icon(
+                        Icons.menu_book_rounded,
+                        size: 20,
+                        color: Colors.black,
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 5),
-                Container(
-                  width: 300,
-                  height: 1.5,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white
+                      SizedBox(width: 5),
+                      Text(
+                        '${widget.storyData['ratingCount']} reads',
+                        style: TextStyle(
+                          fontFamily: 'SF Pro',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                        ),
+                      ),
+                      SizedBox(width: 15),
+                      Icon(
+                        Icons.favorite_outline_rounded,
+                        size: 20,
+                        color: Colors.black,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        '0 likes',
+                        style: TextStyle(
+                          fontFamily: 'SF Pro',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                ),          
               ],
             )
           ),
+          // about
           Positioned(
-            bottom: 280,
-            left: 60,
-            right: 50,
+            top: 615,
+            left: 47,
+            right: 45,
             child: Text(
-              'About The Hare and the Tortoise',
+              'About ${widget.storyData['title']}',
               style: TextStyle(
                 fontFamily: 'SF Pro',
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.white
+                color: Colors.black
               ),
             ),
           ),
           Positioned(
-            bottom: 155,
-            left: 60,
-            right: 50,
+            top: 640,
+            left: 47,
+            right: 45,
             child: SizedBox(
               child: Text(
-                """Once upon a time in a peaceful forest, there was a swift hare and a slow but steady tortoise. One day, the hare challenged the tortoise to a race. "Let's see who can reach the finish line first!" the hare said confidently. And so the race began! The hare took off and ran far ahead. When he turned back, he couldn't even see the tortoise's shadow.""",
+                widget.storyData['content'][0]['text']['en'],
                 textAlign: TextAlign.justify,
                 style: TextStyle(
                   fontFamily: 'SF Pro',
                   fontSize: 12,
-                  color: Colors.white
+                  color: Colors.black
                 ),
+                maxLines: 8,
+                overflow: TextOverflow.ellipsis
               ),
             ),
           ),
+          // button
           Positioned(
             bottom: 70,
-            left: 60,
-            right: 50,
+            left: 47,
+            right: 45,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton.icon(
                   onPressed: (){}, 
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.6),
+                    backgroundColor: Colors.black.withOpacity(0.4),
                     foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)
                     )
@@ -340,16 +349,24 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     style: TextStyle(
                       fontFamily: 'SF Pro',
                       fontSize: 16,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1
                     ),
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: (){}, 
+                  onPressed: (){
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => ListeningPage(storyData: widget.storyData)
+                      )
+                    );
+                  }, 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromRGBO(0, 85, 255, 1),
                     foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)
                     )
@@ -360,7 +377,8 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     style: TextStyle(
                       fontFamily: 'SF Pro',
                       fontSize: 16,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1
                     ),
                   ),
                 )
@@ -377,7 +395,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
           Offstage(
             offstage: true, // always hide this widget
             child: ImagePixels(
-              imageProvider: AssetImage(_imagePath),
+              imageProvider: NetworkImage(widget.storyData['content'][0]['imageUrl']),
               builder: (context, imgDetails) {
                 // check if the color has been extracted and if imgDetails is available
                 if (imgDetails.width != null) {

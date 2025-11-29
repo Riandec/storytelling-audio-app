@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:storytelling_audio_app/screens/search_page.dart';
 import 'package:storytelling_audio_app/screens/collection_page.dart';
 import 'package:storytelling_audio_app/screens/setting_page.dart';
+import 'package:storytelling_audio_app/screens/story_details_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int navIndex = 0, genreIndex = 0, picIndex = 0;
+  int navIndex = 0, picIndex = 0;
+  List<int> genreIndex = [0];
   final CarouselSliderController _titleController = CarouselSliderController();
   final CarouselSliderController _imageController = CarouselSliderController();
   // button color
@@ -145,11 +147,23 @@ class _HomePageState extends State<HomePage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: genres.length,
                   itemBuilder: (context, index) {
-                    bool isSelected = genreIndex == index;
+                    bool isSelected = genreIndex.contains(index);
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          genreIndex = index;
+                          if (index == 0) {
+                            genreIndex = [0];
+                          } else {
+                            genreIndex.remove(0);
+                            if (genreIndex.contains(index)) {
+                              genreIndex.remove(index);
+                            } else {
+                              genreIndex.add(index);
+                            }
+                            if (genreIndex.isEmpty) {
+                              genreIndex = [0];
+                            }
+                          }
                         });
                       },           
                       child: Container(
@@ -187,8 +201,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 }
-
-                final data = snapshot.data!.docs;
+                List<QueryDocumentSnapshot> data = snapshot.data!.docs; 
+                if (!genreIndex.contains(0) && genreIndex.isNotEmpty) {
+                  List<String> selectedGenreNames = genreIndex.map((i) => genres[i]).toList();
+                  data = data.where((doc) {
+                    return selectedGenreNames.every((genre) => doc['genres'].contains(genre));
+                  }).toList();
+                }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -197,29 +216,40 @@ class _HomePageState extends State<HomePage> {
                       carouselController: _imageController,
                       items: data.map((doc) {
                         final stories = doc.data() as Map<String, dynamic>;
-                        return Container(
-                          margin: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3F000000),
-                                blurRadius: 4,
-                                offset: Offset(4, 4),
-                                spreadRadius: 0,
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StoryDetailsPage(storyData: stories)
+                              )
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0x3F000000),
+                                  blurRadius: 4,
+                                  offset: Offset(4, 4),
+                                  spreadRadius: 0,
+                                ),
+                              ],
+                              image: DecorationImage(
+                                image: NetworkImage(stories['coverUrl']),
+                                fit: BoxFit.cover,
                               ),
-                            ],
-                            image: DecorationImage(
-                              image: NetworkImage(stories['coverUrl']),
-                              fit: BoxFit.cover,
                             ),
-                          ),
+                          )
                         );
                       }).toList(),
                       options: CarouselOptions(
                         height: 350,
                         enlargeCenterPage: true,
                         viewportFraction: 0.5,
+                        enableInfiniteScroll: data.length > 1,
                         onPageChanged: (index, reason) {
                           setState(() {
                             picIndex = index;
@@ -250,6 +280,7 @@ class _HomePageState extends State<HomePage> {
                       options: CarouselOptions(
                         height: 40,
                         enlargeCenterPage: true,
+                        enableInfiniteScroll: data.length > 1,
                         onPageChanged: (index, reason) {
                           setState(() {
                             picIndex = index;
@@ -308,22 +339,32 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 children: [
                                   // images
-                                  Container(
-                                    width: 113,
-                                    height: 170,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3F000000),
-                                          blurRadius: 4,
-                                          offset: Offset(2, 2),
-                                          spreadRadius: 0,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => StoryDetailsPage(storyData: stories.data() as Map<String, dynamic>)
+                                        )
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 113,
+                                      height: 170,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Color(0x3F000000),
+                                            blurRadius: 4,
+                                            offset: Offset(2, 2),
+                                            spreadRadius: 0,
+                                          ),
+                                        ],
+                                        image: DecorationImage(
+                                          image: NetworkImage(stories['coverUrl']),
+                                          fit: BoxFit.cover,
                                         ),
-                                      ],
-                                      image: DecorationImage(
-                                        image: NetworkImage(stories['coverUrl']),
-                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
@@ -401,40 +442,50 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 children: [
                                   // images
-                                  Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Container(
-                                        width: 113,
-                                        height: 170,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Color(0x3F000000),
-                                              blurRadius: 4,
-                                              offset: Offset(2, 2),
-                                              spreadRadius: 0,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => StoryDetailsPage(storyData: stories.data() as Map<String, dynamic>)
+                                        )
+                                      );
+                                    },
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Container(
+                                          width: 113,
+                                          height: 170,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color(0x3F000000),
+                                                blurRadius: 4,
+                                                offset: Offset(2, 2),
+                                                spreadRadius: 0,
+                                              ),
+                                            ],
+                                            image: DecorationImage(
+                                              image: NetworkImage(stories['coverUrl']),
+                                              fit: BoxFit.cover,
                                             ),
-                                          ],
-                                          image: DecorationImage(
-                                            image: NetworkImage(stories['coverUrl']),
-                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                      ),
-                                      Positioned(
-                                        top: -25,
-                                        child: Text(
-                                          '${index+1}',
-                                          style: TextStyle(
-                                            fontFamily: 'SF Pro',
-                                            fontSize: 42,
-                                            fontWeight: FontWeight.w900
-                                          ),
+                                        Positioned(
+                                          top: -25,
+                                          child: Text(
+                                            '${index+1}',
+                                            style: TextStyle(
+                                              fontFamily: 'SF Pro',
+                                              fontSize: 42,
+                                              fontWeight: FontWeight.w900
+                                            ),
+                                          )
                                         )
-                                      )
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                   SizedBox(height: 5),
                                   // rating
@@ -513,8 +564,6 @@ class _HomePageState extends State<HomePage> {
 
 Unfinished
 
-- filter by genres
-- tap cover to navigate to story details
 - recommended
 
 */
