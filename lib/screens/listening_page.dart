@@ -173,3 +173,13 @@ class _ListeningPageState extends State<ListeningPage> {
     );
   }
 }
+
+/*
+
+Unfinished
+
+- setting
+- ui control
+- sync audio
+
+*/

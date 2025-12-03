@@ -17,8 +17,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int navIndex = 0, picIndex = 0;
   List<int> genreIndex = [0];
-  final CarouselSliderController _titleController = CarouselSliderController();
-  final CarouselSliderController _imageController = CarouselSliderController();
+  final _titleController = CarouselSliderController();
+  final _imageController = CarouselSliderController();
   // button color
   final Color buttonActive = Color.fromRGBO(0, 85, 255, 1);
   final Color buttonInactive = Colors.white;

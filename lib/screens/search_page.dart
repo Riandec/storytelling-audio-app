@@ -13,7 +13,7 @@ class _SearchPageState extends State<SearchPage> {
   // search bar
   String queryKeyword = '';
   Timer? debouce;
-  SearchController searchController = SearchController();
+  final searchController = SearchController();
   // latest search
   List<String> latestSearches = [];
   int maxSearch = 5;
@@ -106,7 +106,7 @@ class _SearchPageState extends State<SearchPage> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
