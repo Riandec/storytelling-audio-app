@@ -72,7 +72,6 @@ class _SettingPageState extends State<SettingPage> {
                     'Profile',
                     style: TextStyle(
                       fontFamily: 'SF Pro',
-                      fontSize: 18,
                       letterSpacing: 1
                     ),
                   ),
@@ -86,7 +85,6 @@ class _SettingPageState extends State<SettingPage> {
                     'Notification',
                     style: TextStyle(
                       fontFamily: 'SF Pro',
-                      fontSize: 18,
                       letterSpacing: 1
                     ),
                   ),
@@ -100,7 +98,6 @@ class _SettingPageState extends State<SettingPage> {
                     'Appearance',
                     style: TextStyle(
                       fontFamily: 'SF Pro',
-                      fontSize: 18,
                       letterSpacing: 1
                     ),
                   ),
@@ -114,7 +111,6 @@ class _SettingPageState extends State<SettingPage> {
                     'Privacy and Security',
                     style: TextStyle(
                       fontFamily: 'SF Pro',
-                      fontSize: 18,
                       letterSpacing: 1
                     ),
                   ),
@@ -128,7 +124,6 @@ class _SettingPageState extends State<SettingPage> {
                     'Help and Support',
                     style: TextStyle(
                       fontFamily: 'SF Pro',
-                      fontSize: 18,
                       letterSpacing: 1
                     ),
                   ),
@@ -142,7 +137,6 @@ class _SettingPageState extends State<SettingPage> {
                     'About',
                     style: TextStyle(
                       fontFamily: 'SF Pro',
-                      fontSize: 18,
                       letterSpacing: 1
                     ),
                   ),

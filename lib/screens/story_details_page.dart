@@ -22,22 +22,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
   IconData _heartShape = Icons.favorite_outline_rounded;
   Color _heartColor = Colors.black.withOpacity(0.4);
 
-  /*
-  @override
-  void initState() {
-    super.initState();
-    _loadAndExtractColors();
-  }
-  
-  Future<void> _loadAndExtractColors() async {
-    // wait for the image finish loading
-    await precacheImage(AssetImage(_imagePath), context);
-    if (!mounted) return;
-    // after the image is loaded, extract colors
-    setState(() {});
-  }
-  */
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
