@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_pixels/image_pixels.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:storytelling_audio_app/screens/listening_page.dart';
 
 class StoryDetailsPage extends StatefulWidget {
@@ -21,6 +23,65 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
   bool _isLiked = false;
   IconData _heartShape = Icons.favorite_outline_rounded;
   Color _heartColor = Colors.black.withOpacity(0.4);
+  // firebase
+  final CollectionReference stories = FirebaseFirestore.instance.collection('Stories');
+
+  @override
+  void initState() {
+    super.initState();
+    checkLiked();
+  }
+
+  void checkLiked() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> likedStories = prefs.getStringList('likedStories') ?? [];
+    setState(() {
+      _isLiked = likedStories.contains(widget.storyId);
+      if (_isLiked) {
+        _heartShape = Icons.favorite_rounded;
+        _heartColor = Colors.red;
+      } else {
+        _heartShape = Icons.favorite_outline_rounded;
+        _heartColor = Colors.black.withOpacity(0.4);
+      }
+    });
+    // debug
+    print('Liked Stories: $likedStories');
+    print('Current Story ID: ${widget.storyId}');
+    print('isLiked: $_isLiked');
+  }
+
+  void toggleLike() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> likedStories = prefs.getStringList('likedStories') ?? [];
+    setState(() {
+      if (_isLiked) {
+        // if liked then unlike
+        likedStories.remove(widget.storyId);
+        _isLiked = false;
+        _heartShape = Icons.favorite_outline_rounded;
+        _heartColor = Colors.black.withOpacity(0.4);
+        // decrease like count in firestore
+        stories.doc(widget.storyId).update({'likeCount': FieldValue.increment(-1)});
+        // debug
+        print('Unliked: ${widget.storyId}');
+      } else {
+        // if not liked then like
+        likedStories.add(widget.storyId);
+        _isLiked = true;
+        _heartShape = Icons.favorite_rounded;
+        _heartColor = Colors.red;
+        // increase like count in firestore
+        stories.doc(widget.storyId).update({'likeCount': FieldValue.increment(1)});
+        // debug
+        print('Liked: ${widget.storyId}');
+      }
+    });
+    // save to shared preferences
+    await prefs.setStringList('likedStories', likedStories);
+    // debug
+    print('Updated Liked Stories: $likedStories');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,13 +175,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                   ),
                 ),
                 IconButton(
-                  onPressed: (){
-                    setState(() {
-                      _isLiked = !_isLiked;
-                      _heartShape = _isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded;
-                      _heartColor = _isLiked ? Colors.red : Colors.black.withOpacity(0.4);
-                    });
-                  }, 
+                  onPressed: toggleLike,
                   icon: Container(
                     height: 35,
                     width: 35,
@@ -263,7 +318,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                       ),
                       SizedBox(width: 5),
                       Text(
-                        '0 likes',
+                        '${widget.storyData['likeCount']} likes',
                         style: TextStyle(
                           fontFamily: 'SF Pro',
                           fontSize: 16,
