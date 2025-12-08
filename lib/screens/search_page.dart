@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import 'package:storytelling_audio_app/screens/story_details_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -263,8 +264,8 @@ class _SearchPageState extends State<SearchPage> {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return Center(child: CircularProgressIndicator());
                           }
-                          final docs = snapshot.data!;
-                          if (docs.isEmpty) {
+                          final data = snapshot.data!;
+                          if (data.isEmpty) {
                             return SizedBox.shrink();
                           }
                           return Container(
@@ -276,22 +277,35 @@ class _SearchPageState extends State<SearchPage> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
-                              itemCount: docs.length,
+                              itemCount: data.length,
                               itemBuilder: (context, index) {
-                                final data = docs[index].data() as Map<String, dynamic>;
+                                final doc = data[index];
+                                final story = doc.data() as Map<String, dynamic>;
                                 return ListTile(
                                   title: Text(
-                                    data['title'],
+                                    story['title'],
                                     style: TextStyle(
                                       fontFamily: 'SF Pro'
                                     ),
                                   ),
                                   onTap: () async {
-                                    addToLatestSearch(data['title']);
+                                    addToLatestSearch(story['title']);
                                     setState(() {
                                       searchController.clear();
                                       queryKeyword = '';
                                     });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => StoryDetailsPage(
+                                          storyId: doc.id,
+                                          storyData: {
+                                            ...story,
+                                            'id': doc.id,
+                                          }
+                                        )
+                                      )
+                                    );
                                   },
                                 );
                               },
@@ -310,11 +324,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-
-/*
-
-Unfinised
-
-- tap cover to navigate to story details
-
-*/
