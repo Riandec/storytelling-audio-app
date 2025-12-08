@@ -215,13 +215,13 @@ class _HomePageState extends State<HomePage> {
                     CarouselSlider(
                       carouselController: _imageController,
                       items: data.map((doc) {
-                        final stories = doc.data() as Map<String, dynamic>;
+                        final story = doc.data() as Map<String, dynamic>;
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => StoryDetailsPage(storyId: doc.id ,storyData: stories)
+                                builder: (context) => StoryDetailsPage(storyId: doc.id ,storyData: story)
                               )
                             );
                           },
@@ -238,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                               image: DecorationImage(
-                                image: NetworkImage(stories['coverUrl']),
+                                image: NetworkImage(story['coverUrl']),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -263,11 +263,11 @@ class _HomePageState extends State<HomePage> {
                     CarouselSlider(
                       carouselController: _titleController,
                       items: data.map((doc) { 
-                        final stories = doc.data() as Map<String, dynamic>;
+                        final story = doc.data() as Map<String, dynamic>;
                         return Container(
                           alignment: Alignment.center,
                           child: Text(
-                            stories['title'],
+                            story['title'],
                             style: TextStyle(
                               fontFamily: 'SF Pro',
                               fontSize: 16,
@@ -334,7 +334,7 @@ class _HomePageState extends State<HomePage> {
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             final doc = data[index];
-                            final stories = doc.data() as Map<String, dynamic>;
+                            final story = doc.data() as Map<String, dynamic>;
                             return Padding(
                               padding: EdgeInsets.only(right: 17),
                               child: Column(
@@ -345,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: stories)
+                                          builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: story)
                                         )
                                       );
                                     },
@@ -363,7 +363,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ],
                                         image: DecorationImage(
-                                          image: NetworkImage(stories['coverUrl']),
+                                          image: NetworkImage(story['coverUrl']),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -375,7 +375,7 @@ class _HomePageState extends State<HomePage> {
                                     width: 113,
                                     height: 40,
                                     child: Text(
-                                      stories['title'],
+                                      story['title'],
                                       style: TextStyle(
                                         fontFamily: 'SF Pro',
                                         fontSize: 12,
@@ -438,7 +438,7 @@ class _HomePageState extends State<HomePage> {
                           itemCount: data.length > 3 ? 3 : data.length,
                           itemBuilder: (context, index) {
                             final doc = data[index];
-                            final stories = doc.data() as Map<String, dynamic>;
+                            final story = doc.data() as Map<String, dynamic>;
                             return Padding(
                               padding: EdgeInsets.only(right: 17),
                               child: Column(
@@ -449,7 +449,7 @@ class _HomePageState extends State<HomePage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: stories)
+                                          builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: story)
                                         )
                                       );
                                     },
@@ -470,7 +470,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ],
                                             image: DecorationImage(
-                                              image: NetworkImage(stories['coverUrl']),
+                                              image: NetworkImage(story['coverUrl']),
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -500,10 +500,10 @@ class _HomePageState extends State<HomePage> {
                                         ...List.generate(5, (starIndex){
                                           IconData iconData;
                                           Color iconColor;
-                                          if (starIndex < stories['rating'].floor()) {
+                                          if (starIndex < story['rating'].floor()) {
                                             iconData = Icons.star_rounded;
                                             iconColor = starActive;
-                                          } else if (starIndex < stories['rating'].ceil() && stories['rating'] % 1 != 0) {
+                                          } else if (starIndex < story['rating'].ceil() && story['rating'] % 1 != 0) {
                                             iconData = Icons.star_half_rounded;
                                             iconColor = starActive;
                                           } else {
@@ -518,7 +518,7 @@ class _HomePageState extends State<HomePage> {
                                         }),
                                         SizedBox(width: 5),
                                         Text(
-                                          '${stories['rating'].toStringAsFixed(1)} stars',
+                                          '${story['rating'].toStringAsFixed(1)} stars',
                                           style: TextStyle(
                                             fontFamily: 'SF Pro',
                                             fontSize: 10
@@ -533,7 +533,7 @@ class _HomePageState extends State<HomePage> {
                                     width: 113,
                                     height: 40,
                                     child: Text(
-                                      stories['title'],
+                                      story['title'],
                                       style: TextStyle(
                                         fontFamily: 'SF Pro',
                                         fontSize: 12,
