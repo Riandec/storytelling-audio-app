@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CollectionPage extends StatefulWidget {
   const CollectionPage({super.key});
@@ -8,6 +10,49 @@ class CollectionPage extends StatefulWidget {
 }
 
 class _CollectionPageState extends State<CollectionPage> {
+  List<String> likedStoryIds = [];
+  List<Map<String, dynamic>> likedStoryData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadLikedStories();
+  }
+
+  // load liked stories from shared preferences
+  Future<void> loadLikedStories() async {
+    // get id from shared preferences
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    likedStoryIds = prefs.getStringList('likedStoryIds') ?? [];
+    // debug
+    print('Liked Story IDs: $likedStoryIds');
+    
+    // get data from firestore
+    if (likedStoryIds.isNotEmpty) {
+      List<Map<String, dynamic>> stories = [];
+      for (String storyId in likedStoryIds) {
+        try {
+          DocumentSnapshot doc = await FirebaseFirestore.instance
+            .collection('Stories')
+            .doc(storyId)
+            .get();
+
+          if (doc.exists) {
+            Map<String, dynamic> storyData = doc.data() as Map<String, dynamic>;
+            storyData['documentId'] = doc.id;
+            stories.add(storyData);
+          }
+        } catch (e) {
+          print('Error loading story $storyId: $e');
+        }
+      }
+      setState(() {
+        likedStoryData = stories;
+      });
+    }
+    print('Loaded ${likedStoryData.length} stories');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,9 +92,9 @@ class _CollectionPageState extends State<CollectionPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/images/story-liked.png'),
+                      Image.asset('assets/images/story-liked.png', height: 90),
                       Text(
-                        '2 stories',
+                        '${likedStoryData.length} ${likedStoryData.length == 1 ? "story" : "stories"}',
                         style: TextStyle(
                           fontFamily: 'SF Pro',
                           fontSize: 12,
@@ -70,9 +115,9 @@ class _CollectionPageState extends State<CollectionPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/images/time-of-listening.png'),
+                      Image.asset('assets/images/time-of-listening.png', height: 90),
                       Text(
-                        '15 minutes',
+                        '0 minutes',
                         style: TextStyle(
                           fontFamily: 'SF Pro',
                           fontSize: 12,
@@ -93,9 +138,9 @@ class _CollectionPageState extends State<CollectionPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/images/story-completed.png'),
+                      Image.asset('assets/images/story-completed.png', height: 90),
                       Text(
-                        '1 story',
+                        '0 stories',
                         style: TextStyle(
                           fontFamily: 'SF Pro',
                           fontSize: 12,
@@ -115,97 +160,136 @@ class _CollectionPageState extends State<CollectionPage> {
                   )
                 ],
               ),
-              SizedBox(height: 70),
-              Center(
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    // background layer
-                    Container(
-                      width: 360,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Color.fromRGBO(180, 225, 255, 1)
-                      ),
-                    ),
-                    // cover image
-                    Positioned(
-                      left: 10,
-                      bottom: 15,
-                      child: Container(
-                        width: 113,
-                        height: 154,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 4,
-                              offset: Offset(0, 4),
-                              spreadRadius: 0,
-                            )
-                          ]
+              SizedBox(height: 10),
+              // liked story list
+              likedStoryData.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 100),
+                      child: Text(
+                        'No stories in the collection yet',
+                        style: TextStyle(
+                          fontFamily: 'SF Pro',
+                          fontSize: 16,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            'assets/images/the-boy-who-cried-wolf.jpg',
-                            fit: BoxFit.cover
-                          )
-                        )
-                      )
-                    ),
-                    // text
-                    Positioned(
-                      top: 10,
-                      left: 150,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'The Boy Who Cried Wolf',
-                            style: TextStyle(
-                              fontFamily: 'SF Pro',
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          Text(
-                            'Recently listened',
-                            style: TextStyle(
-                              fontFamily: 'SF Pro'
-                            ),
-                          ),
-                          Text(
-                            '100%',
-                            style: TextStyle(
-                              fontFamily: 'Rubik Scribble',
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
-                              height: 1.2
-                            ),
-                          ),
-                          Text(
-                            '~ 0 minute left',
-                            style: TextStyle(
-                              fontFamily: 'SF Pro',
-                            ),
-                          ),
-                          SizedBox(height: 7),
-                          Container(
-                            width: 190,
-                            height: 5,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.black
-                            ),
-                          )
-                        ],
-                      )
+                      ),
                     )
-                  ],
-                ),
-              )
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: likedStoryData.length,
+                    itemBuilder:(context, index) {
+                      final story = likedStoryData[index];
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 50),
+                        child: Center(
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              // background layer
+                              Container(
+                                width: 360,
+                                height: 140,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Color.fromRGBO(180, 225, 255, 1)
+                                ),
+                              ),
+                              // cover image
+                              Positioned(
+                                left: 10,
+                                bottom: 15,
+                                child: Container(
+                                  width: 113,
+                                  height: 154,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x3F000000),
+                                        blurRadius: 4,
+                                        offset: Offset(0, 4),
+                                        spreadRadius: 0,
+                                      )
+                                    ]
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      story['coverUrl'],
+                                      fit: BoxFit.cover
+                                    )
+                                  )
+                                )
+                              ),
+                              // text
+                              Positioned(
+                                top: 10,
+                                left: 150,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      story['title'],
+                                      style: TextStyle(
+                                        fontFamily: 'SF Pro',
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    Text(
+                                      'Recently listened',
+                                      style: TextStyle(
+                                        fontFamily: 'SF Pro'
+                                      ),
+                                    ),
+                                    Text(
+                                      '20%',
+                                      style: TextStyle(
+                                        fontFamily: 'Rubik Scribble',
+                                        fontSize: 35,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.2
+                                      ),
+                                    ),
+                                    Text(
+                                      '~ 8 minute left',
+                                      style: TextStyle(
+                                        fontFamily: 'SF Pro',
+                                      ),
+                                    ),
+                                    SizedBox(height: 7),
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          width: 190,
+                                          height: 5,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: Colors.black)
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 40,
+                                          height: 5,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.black
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
             ],
           )
         )

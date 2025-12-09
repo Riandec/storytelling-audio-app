@@ -34,9 +34,9 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
 
   void checkLiked() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> likedStories = prefs.getStringList('likedStories') ?? [];
+    List<String> likedStoryIds = prefs.getStringList('likedStoryIds') ?? [];
     setState(() {
-      _isLiked = likedStories.contains(widget.storyId);
+      _isLiked = likedStoryIds.contains(widget.storyId);
       if (_isLiked) {
         _heartShape = Icons.favorite_rounded;
         _heartColor = Colors.red;
@@ -46,18 +46,18 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
       }
     });
     // debug
-    print('Liked Stories: $likedStories');
+    print('Liked Stories: $likedStoryIds');
     print('Current Story ID: ${widget.storyId}');
     print('isLiked: $_isLiked');
   }
 
   void toggleLike() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> likedStories = prefs.getStringList('likedStories') ?? [];
+    List<String> likedStoryIds = prefs.getStringList('likedStoryIds') ?? [];
     setState(() {
       if (_isLiked) {
         // if liked then unlike
-        likedStories.remove(widget.storyId);
+        likedStoryIds.remove(widget.storyId);
         _isLiked = false;
         _heartShape = Icons.favorite_outline_rounded;
         _heartColor = Colors.black.withOpacity(0.4);
@@ -67,7 +67,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
         print('Unliked: ${widget.storyId}');
       } else {
         // if not liked then like
-        likedStories.add(widget.storyId);
+        likedStoryIds.add(widget.storyId);
         _isLiked = true;
         _heartShape = Icons.favorite_rounded;
         _heartColor = Colors.red;
@@ -78,9 +78,9 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
       }
     });
     // save to shared preferences
-    await prefs.setStringList('likedStories', likedStories);
+    await prefs.setStringList('likedStoryIds', likedStoryIds);
     // debug
-    print('Updated Liked Stories: $likedStories');
+    print('Updated Liked Stories: $likedStoryIds');
   }
 
   @override
