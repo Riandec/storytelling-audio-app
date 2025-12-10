@@ -12,11 +12,13 @@ class CollectionPage extends StatefulWidget {
 class _CollectionPageState extends State<CollectionPage> {
   List<String> likedStoryIds = [];
   List<Map<String, dynamic>> likedStoryData = [];
+  List<String> finishedStoryIds = [];
 
   @override
   void initState() {
     super.initState();
     loadLikedStories();
+    loadFinishedStories();
   }
 
   // load liked stories from shared preferences
@@ -50,7 +52,18 @@ class _CollectionPageState extends State<CollectionPage> {
         likedStoryData = stories;
       });
     }
+    //debug
     print('Loaded ${likedStoryData.length} stories');
+  }
+
+  // load finished stories from shared preferences
+  Future<void> loadFinishedStories() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      finishedStoryIds = prefs.getStringList('finishedStoryIds') ?? [];
+    });
+    //debug
+    print('Finished Story IDs: $finishedStoryIds');
   }
 
   @override
@@ -140,7 +153,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     children: [
                       Image.asset('assets/images/story-completed.png', height: 90),
                       Text(
-                        '0 stories',
+                        '${finishedStoryIds.length} ${finishedStoryIds.length == 1 ? "story" : "stories"}',
                         style: TextStyle(
                           fontFamily: 'SF Pro',
                           fontSize: 12,
@@ -183,6 +196,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     itemCount: likedStoryData.length,
                     itemBuilder:(context, index) {
                       final story = likedStoryData[index];
+                      final isFinished = finishedStoryIds.contains(story['documentId']);
                       return Padding(
                         padding: EdgeInsets.only(bottom: 50),
                         child: Center(
@@ -240,13 +254,13 @@ class _CollectionPageState extends State<CollectionPage> {
                                       ),
                                     ),
                                     Text(
-                                      'Recently listened',
+                                      isFinished ? 'Finished' : 'Recently listened',
                                       style: TextStyle(
                                         fontFamily: 'SF Pro'
                                       ),
                                     ),
                                     Text(
-                                      '20%',
+                                      isFinished ? '100%' : '0%',
                                       style: TextStyle(
                                         fontFamily: 'Rubik Scribble',
                                         fontSize: 35,
@@ -255,7 +269,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                       ),
                                     ),
                                     Text(
-                                      '~ 8 minute left',
+                                      isFinished ? '0 minute left' : '~ 10 minute left',
                                       style: TextStyle(
                                         fontFamily: 'SF Pro',
                                       ),
@@ -272,7 +286,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                           ),
                                         ),
                                         Container(
-                                          width: 40,
+                                          width: isFinished ? 190 : 0,
                                           height: 5,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),

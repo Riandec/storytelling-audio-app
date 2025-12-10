@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RatingPage extends StatefulWidget {
   final String storyId;
@@ -51,11 +52,19 @@ class _RatingPageState extends State<RatingPage> {
           'ratingCount': newRatingCount
         });
         // end transaction and unlock document
-        
-        if (mounted) {
-          Navigator.popUntil(context, (route) => route.isFirst);
-        }
       });
+      // save finished listening story to shared preferences
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String> finishedStoryIds = prefs.getStringList('finishedStoryIds') ?? [];
+      if (!finishedStoryIds.contains(widget.storyId)) {
+        finishedStoryIds.add(widget.storyId);
+        await prefs.setStringList('finishedStoryIds', finishedStoryIds);
+        //debug
+        print('Story ${widget.storyId} marked as finished');
+      }
+      if (mounted) {
+        Navigator.popUntil(context, (route) => route.isFirst);
+      }
     } catch (e) {
       print('Error: $e');
     }
