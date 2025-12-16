@@ -14,24 +14,45 @@ class ListeningPage extends StatefulWidget {
 class _ListeningPageState extends State<ListeningPage> {
   int currentPage = 0;
   bool subtitleEnabled = false;
-  bool languageEnabled = false;
   bool autoplayEnabled = false;
   bool sleepModeEnabled = false;
   double fontSize = 50.0;
   double voice = 50.0;
   double bgm = 50.0;
   double speed = 50.0;
+  List<bool> languageSelected = [false, true];
 
   @override
   Widget build(BuildContext context) {
     int totalPages = widget.storyData['content'].length;
+    String language = languageSelected[0] ? 'en' : 'th';
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // image
           Image.network(
             widget.storyData['content'][currentPage]['imageUrl'],
             fit: BoxFit.cover,
+          ),
+          // subtitle
+          Positioned(
+            bottom: 120,
+            left: 10,
+            right: 10,
+            child: subtitleEnabled 
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  color: Colors.black.withOpacity(0.4),
+                  child: Text(
+                    widget.storyData['content'][currentPage]['text'][language],
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white
+                    ),
+                  ),
+                ) 
+              : SizedBox.shrink(),
           ),
           // top bar
           Positioned(
@@ -60,6 +81,7 @@ class _ListeningPageState extends State<ListeningPage> {
                     )
                   )
                 ),
+                // title
                 Expanded(
                   child: Center(
                     child: SingleChildScrollView(
@@ -67,7 +89,6 @@ class _ListeningPageState extends State<ListeningPage> {
                       child: Text(
                         widget.storyData['title'],
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontWeight: FontWeight.bold,
                           fontSize: 22,
                           color: Colors.black
@@ -139,30 +160,48 @@ class _ListeningPageState extends State<ListeningPage> {
                                           )
                                         ],
                                       ),
-                                      // language
+                                      // language: toggle button
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(left: 20),
-                                            child: Text('Language'),
+                                            child: Text(
+                                              'Language',
+                                              style: TextStyle(
+                                                color: subtitleEnabled ? Colors.black : Colors.grey[400],
+                                              ),
+                                            ),
                                           ),
-                                          Switch(
-                                            value: languageEnabled, 
-                                            onChanged: (value){
-                                              setModalState(() {
-                                                languageEnabled = value;
-                                              });
-                                              setState(() {});
-                                            },
-                                            inactiveThumbColor: Colors.white,
-                                            activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                                            trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-                                              if (states.contains(WidgetState.selected)) {
-                                                return Colors.transparent;
-                                              }
-                                              return Colors.transparent;
-                                            }),
+                                          ToggleButtons(
+                                            onPressed: subtitleEnabled 
+                                              ? (index) {
+                                                  setModalState(() {
+                                                    for (int i = 0; i < languageSelected.length; i++) {
+                                                      languageSelected[i] = i == index;
+                                                    }
+                                                  });
+                                                  setState(() {});
+                                                }
+                                              : null,
+                                            isSelected: languageSelected,
+                                            borderRadius: BorderRadius.circular(10),
+                                            fillColor: subtitleEnabled ? Color.fromRGBO(0, 85, 255, 1) : Colors.grey[400],
+                                            disabledColor: Colors.grey[400],
+                                            constraints: BoxConstraints(
+                                              minHeight: 35,
+                                              minWidth: 40,
+                                            ),
+                                            children: [
+                                              Opacity(
+                                                opacity: subtitleEnabled ? 1.0 : 0.5,
+                                                child: Image.asset('assets/images/uk-flag.png', height: 20)
+                                              ),
+                                              Opacity(
+                                                opacity: subtitleEnabled ? 1.0 : 0.5,
+                                                child: Image.asset('assets/images/thai-flag.jpg', height: 20)
+                                              )
+                                            ], 
                                           )
                                         ],
                                       ),
@@ -172,33 +211,41 @@ class _ListeningPageState extends State<ListeningPage> {
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(left: 20),
-                                            child: Text('Font Size'),
+                                            child: Text(
+                                              'Font Size',
+                                              style: TextStyle(
+                                                color: subtitleEnabled ? Colors.black : Colors.grey[400],
+                                              ),
+                                            ),
                                           ),
                                           Column(
                                             children: [
                                               SliderTheme(
                                                 data: SliderTheme.of(context).copyWith(
-                                                  activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                                                  thumbColor: Color.fromRGBO(0, 85, 255, 1),
+                                                  activeTrackColor: subtitleEnabled ? Color.fromRGBO(0, 85, 255, 1) : Colors.grey[400],
+                                                  thumbColor: subtitleEnabled ? Color.fromRGBO(0, 85, 255, 1) : Colors.grey[400],
+                                                  inactiveTrackColor: Colors.grey[400]
                                                 ), 
                                                 child: Slider(
                                                   value: fontSize, 
                                                   min: 0,
                                                   max: 100,
                                                   padding: EdgeInsets.zero,
-                                                  onChanged: (value){
-                                                    setModalState(() {
-                                                      fontSize = value;
-                                                    });
-                                                    setState(() {});
-                                                  }
+                                                  onChanged: subtitleEnabled 
+                                                  ? (value){
+                                                      setModalState(() {
+                                                        fontSize = value;
+                                                      });
+                                                      setState(() {});
+                                                    }
+                                                  : null,
                                                 )
                                               ),
                                               Text(
                                                 fontSize.toInt() <= 33 ? 'Small' : fontSize.toInt() <= 66 ? 'Medium' : 'Large', 
                                                 style: TextStyle(
-                                                  fontFamily: 'SF Pro',
                                                   fontSize: 12,
+                                                  color: subtitleEnabled ? Colors.black : Colors.grey[400]
                                                 ),
                                               )
                                             ],
@@ -238,7 +285,6 @@ class _ListeningPageState extends State<ListeningPage> {
                                               Text(
                                                 '${voice.toInt()}%', 
                                                 style: TextStyle(
-                                                  fontFamily: 'SF Pro',
                                                   fontSize: 12,
                                                 ),
                                               )
@@ -277,7 +323,6 @@ class _ListeningPageState extends State<ListeningPage> {
                                               Text(
                                                 '${bgm.toInt()}%', 
                                                 style: TextStyle(
-                                                  fontFamily: 'SF Pro',
                                                   fontSize: 12,
                                                 ),
                                               )
@@ -314,7 +359,6 @@ class _ListeningPageState extends State<ListeningPage> {
                                               Text(
                                                 '${speed.toInt()}%', 
                                                 style: TextStyle(
-                                                  fontFamily: 'SF Pro',
                                                   fontSize: 12,
                                                 ),
                                               )
@@ -378,9 +422,19 @@ class _ListeningPageState extends State<ListeningPage> {
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(left: 20),
-                                            child: Text('Set Time'),
+                                            child: Text(
+                                              'Set Time',
+                                              style: TextStyle(
+                                                color: sleepModeEnabled ? Colors.black : Colors.grey[400]
+                                              ),
+                                            ),
                                           ),
-                                          Text('30 minutes')
+                                          Text(
+                                            '30 minutes',
+                                            style: TextStyle(
+                                              color: sleepModeEnabled ? Colors.black : Colors.grey[400]
+                                            ),
+                                          )
                                         ],
                                       )
                                     ],
@@ -445,7 +499,6 @@ class _ListeningPageState extends State<ListeningPage> {
                 Text(
                   'Page ${currentPage+1}/$totalPages',
                   style: TextStyle(
-                    fontFamily: 'SF Pro',
                     fontSize: 22,
                     color: Colors.black
                   ),
@@ -503,7 +556,6 @@ class _ListeningPageState extends State<ListeningPage> {
 Unfinished
 
 - setting
-- ui control
 - sync audio
 
 */
