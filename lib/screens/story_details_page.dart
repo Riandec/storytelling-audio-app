@@ -147,6 +147,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // back button
                 IconButton(
                   onPressed: (){
                     Navigator.pop(context);
@@ -165,15 +166,16 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     )
                   )
                 ),
+                // title
                 Text(
                   'Story Details',
                   style: TextStyle(
-                    fontFamily: 'SF Pro',
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
                     color: Colors.black
                   ),
                 ),
+                // like button
                 IconButton(
                   onPressed: toggleLike,
                   icon: Container(
@@ -239,7 +241,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                             child: Text(
                               widget.storyData['genres'][index].toString(),
                               style: TextStyle(
-                                fontFamily: 'SF Pro',
                                 fontSize: 12,
                                 color: Colors.white,
                                 letterSpacing: 1
@@ -258,7 +259,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     Text(
                       '${widget.storyData['rating'].toStringAsFixed(1)} stars',
                       style: TextStyle(
-                        fontFamily: 'SF Pro',
                         fontSize: 12,
                         color: Colors.black
                       ),
@@ -288,7 +288,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                       Text(
                         '${widget.storyData['timing']} mins',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black
@@ -304,7 +303,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                       Text(
                         '${widget.storyData['ratingCount']} reads',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black
@@ -320,7 +318,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                       Text(
                         '${widget.storyData['likeCount']} likes',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black
@@ -340,7 +337,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
             child: Text(
               'About ${widget.storyData['title']}',
               style: TextStyle(
-                fontFamily: 'SF Pro',
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.black
@@ -356,7 +352,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                 widget.storyData['content'][0]['text']['en'],
                 textAlign: TextAlign.justify,
                 style: TextStyle(
-                  fontFamily: 'SF Pro',
                   fontSize: 12,
                   color: Colors.black
                 ),
@@ -387,7 +382,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                   label: Text(
                     'Preview',
                     style: TextStyle(
-                      fontFamily: 'SF Pro',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1
@@ -415,7 +409,6 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                   label: Text(
                     'Listen',
                     style: TextStyle(
-                      fontFamily: 'SF Pro',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1

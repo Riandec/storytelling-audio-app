@@ -177,7 +177,6 @@ class _HomePageState extends State<HomePage> {
                           child: Text(
                             genres[index], 
                             style: TextStyle(
-                              fontFamily: 'SF Pro',
                               fontSize: 12, 
                               color: isSelected ? Colors.white : Colors.black
                             )
@@ -269,7 +268,6 @@ class _HomePageState extends State<HomePage> {
                           child: Text(
                             story['title'],
                             style: TextStyle(
-                              fontFamily: 'SF Pro',
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -317,7 +315,6 @@ class _HomePageState extends State<HomePage> {
                       child: Text(
                         "You may also like these stories",
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
@@ -377,7 +374,6 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       story['title'],
                                       style: TextStyle(
-                                        fontFamily: 'SF Pro',
                                         fontSize: 12,
                                         height: 1.25,
                                       ),
@@ -421,7 +417,6 @@ class _HomePageState extends State<HomePage> {
                       child: Text(
                         "Most Popular",
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
@@ -480,7 +475,6 @@ class _HomePageState extends State<HomePage> {
                                           child: Text(
                                             '${index+1}',
                                             style: TextStyle(
-                                              fontFamily: 'SF Pro',
                                               fontSize: 42,
                                               fontWeight: FontWeight.w900
                                             ),
@@ -520,7 +514,6 @@ class _HomePageState extends State<HomePage> {
                                         Text(
                                           '${story['rating'].toStringAsFixed(1)} stars',
                                           style: TextStyle(
-                                            fontFamily: 'SF Pro',
                                             fontSize: 10
                                           ),
                                         )
@@ -535,7 +528,6 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       story['title'],
                                       style: TextStyle(
-                                        fontFamily: 'SF Pro',
                                         fontSize: 12,
                                         height: 1.25,
                                       ),

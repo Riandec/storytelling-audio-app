@@ -141,7 +141,6 @@ class _SearchPageState extends State<SearchPage> {
                     contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                     hintText: 'Enter the name of the story...',
                     hintStyle: TextStyle(
-                      fontFamily: 'SF Pro',
                       fontSize: 16,
                       color: Color(0xFFB3B3B3)
                     ),
@@ -183,7 +182,6 @@ class _SearchPageState extends State<SearchPage> {
                               Text(
                                 'Latest Search', 
                                 style: TextStyle(
-                                  fontFamily: 'SF Pro',
                                   fontWeight: FontWeight.bold
                                 )
                               ),
@@ -192,7 +190,6 @@ class _SearchPageState extends State<SearchPage> {
                                 child: Text(
                                   'Clear All',
                                   style: TextStyle(
-                                    fontFamily: 'SF Pro',
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black
                                   ),
@@ -227,7 +224,6 @@ class _SearchPageState extends State<SearchPage> {
                                   title: Text(
                                     keyword,
                                     style: TextStyle(
-                                      fontFamily: 'SF Pro',
                                       fontSize: 15
                                     ),
                                   ),
@@ -282,12 +278,7 @@ class _SearchPageState extends State<SearchPage> {
                                 final doc = data[index];
                                 final story = doc.data() as Map<String, dynamic>;
                                 return ListTile(
-                                  title: Text(
-                                    story['title'],
-                                    style: TextStyle(
-                                      fontFamily: 'SF Pro'
-                                    ),
-                                  ),
+                                  title: Text(story['title']),
                                   onTap: () async {
                                     addToLatestSearch(story['title']);
                                     setState(() {

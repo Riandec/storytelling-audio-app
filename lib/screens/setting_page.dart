@@ -40,7 +40,6 @@ class _SettingPageState extends State<SettingPage> {
                     contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                     hintText: 'Enter the name of the story...',
                     hintStyle: TextStyle(
-                      fontFamily: 'SF Pro',
                       fontSize: 16,
                       color: Color(0xFFB3B3B3)
                     ),
@@ -71,7 +70,6 @@ class _SettingPageState extends State<SettingPage> {
                   title: Text(
                     'Profile',
                     style: TextStyle(
-                      fontFamily: 'SF Pro',
                       letterSpacing: 1
                     ),
                   ),
@@ -84,7 +82,6 @@ class _SettingPageState extends State<SettingPage> {
                   title: Text(
                     'Notification',
                     style: TextStyle(
-                      fontFamily: 'SF Pro',
                       letterSpacing: 1
                     ),
                   ),
@@ -97,7 +94,6 @@ class _SettingPageState extends State<SettingPage> {
                   title: Text(
                     'Appearance',
                     style: TextStyle(
-                      fontFamily: 'SF Pro',
                       letterSpacing: 1
                     ),
                   ),
@@ -110,7 +106,6 @@ class _SettingPageState extends State<SettingPage> {
                   title: Text(
                     'Privacy and Security',
                     style: TextStyle(
-                      fontFamily: 'SF Pro',
                       letterSpacing: 1
                     ),
                   ),
@@ -123,7 +118,6 @@ class _SettingPageState extends State<SettingPage> {
                   title: Text(
                     'Help and Support',
                     style: TextStyle(
-                      fontFamily: 'SF Pro',
                       letterSpacing: 1
                     ),
                   ),
@@ -136,7 +130,6 @@ class _SettingPageState extends State<SettingPage> {
                   title: Text(
                     'About',
                     style: TextStyle(
-                      fontFamily: 'SF Pro',
                       letterSpacing: 1
                     ),
                   ),

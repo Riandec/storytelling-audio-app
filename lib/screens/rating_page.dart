@@ -116,7 +116,6 @@ class _RatingPageState extends State<RatingPage> {
                 selectedRate == 0 ? 'Your mood' : ratingData[selectedRate]!['mood']!,
                 key: ValueKey(selectedRate),
                 style: TextStyle(
-                  fontFamily: 'SF Pro',
                   fontSize: 16
                 ),
               )

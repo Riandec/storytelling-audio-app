@@ -92,7 +92,6 @@ class _CollectionPageState extends State<CollectionPage> {
               Text(
                 'My Collection',
                 style: TextStyle(
-                  fontFamily: 'SF Pro',
                   fontSize: 22,
                   fontWeight: FontWeight.bold
                 ),
@@ -109,7 +108,6 @@ class _CollectionPageState extends State<CollectionPage> {
                       Text(
                         '${likedStoryData.length} ${likedStoryData.length == 1 ? "story" : "stories"}',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Colors.black
@@ -118,7 +116,6 @@ class _CollectionPageState extends State<CollectionPage> {
                       Text(
                         'you liked',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 12,
                           color: Colors.grey
                         ),
@@ -132,7 +129,6 @@ class _CollectionPageState extends State<CollectionPage> {
                       Text(
                         '0 minutes',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Colors.black
@@ -141,7 +137,6 @@ class _CollectionPageState extends State<CollectionPage> {
                       Text(
                         'of listening',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 12,
                           color: Colors.grey
                         ),
@@ -155,7 +150,6 @@ class _CollectionPageState extends State<CollectionPage> {
                       Text(
                         '${finishedStoryIds.length} ${finishedStoryIds.length == 1 ? "story" : "stories"}',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Colors.black
@@ -164,7 +158,6 @@ class _CollectionPageState extends State<CollectionPage> {
                       Text(
                         'you finished',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 12,
                           color: Colors.grey
                         ),
@@ -182,7 +175,6 @@ class _CollectionPageState extends State<CollectionPage> {
                       child: Text(
                         'No stories in the collection yet',
                         style: TextStyle(
-                          fontFamily: 'SF Pro',
                           fontSize: 16,
                           fontStyle: FontStyle.italic,
                           color: Colors.grey
@@ -249,16 +241,10 @@ class _CollectionPageState extends State<CollectionPage> {
                                     Text(
                                       story['title'],
                                       style: TextStyle(
-                                        fontFamily: 'SF Pro',
                                         fontWeight: FontWeight.bold
                                       ),
                                     ),
-                                    Text(
-                                      isFinished ? 'Finished' : 'Recently listened',
-                                      style: TextStyle(
-                                        fontFamily: 'SF Pro'
-                                      ),
-                                    ),
+                                    Text(isFinished ? 'Finished' : 'Recently listened'),
                                     Text(
                                       isFinished ? '100%' : '0%',
                                       style: TextStyle(
@@ -268,12 +254,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                         height: 1.2
                                       ),
                                     ),
-                                    Text(
-                                      isFinished ? '0 minute left' : '~ 10 minute left',
-                                      style: TextStyle(
-                                        fontFamily: 'SF Pro',
-                                      ),
-                                    ),
+                                    Text(isFinished ? '0 minute left' : '~ 10 minute left'),
                                     SizedBox(height: 7),
                                     Stack(
                                       children: [
