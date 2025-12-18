@@ -66,18 +66,6 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 SizedBox(height: 20),
                 ListTile(
-                  leading: Icon(Icons.person_outline_rounded, color: Colors.black),
-                  title: Text(
-                    'Profile',
-                    style: TextStyle(
-                      letterSpacing: 1
-                    ),
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded, color: Colors.black, size: 22),
-                  minTileHeight: 40,
-                ),
-                Divider(),
-                ListTile(
                   leading: Icon(Icons.notifications_none_rounded, color: Colors.black),
                   title: Text(
                     'Notification',
@@ -145,3 +133,11 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 }
+
+/*
+
+Unfinished
+
+- navigate to each setting detail page
+
+*/
