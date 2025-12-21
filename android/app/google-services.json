@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "704251086923",
-    "project_id": "storytelling-audio-app",
-    "storage_bucket": "storytelling-audio-app.firebasestorage.app"
+    "project_number": "834509746782",
+    "project_id": "storytelling-audio-web-bc2eb",
+    "storage_bucket": "storytelling-audio-web-bc2eb.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:704251086923:android:d7eb9c2ba3f6f741eb65ce",
+        "mobilesdk_app_id": "1:834509746782:android:5cb5c10699d9798a83facf",
         "android_client_info": {
-          "package_name": "com.example.storytelling_audio_app"
+          "package_name": "com.example.first_app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD4DTgWdKla7i_T6u1frvOTOCukCcrP0IE"
+          "current_key": "AIzaSyB5aXqTfFFJCOU4pm3vfxexMC3r3mAPbQ0"
         }
       ],
       "services": {

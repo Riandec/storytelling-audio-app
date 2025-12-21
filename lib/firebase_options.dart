@@ -47,30 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDCygIMGeVHYer3wfVIUl5iHX-3Gpbcgfw',
-    appId: '1:704251086923:web:0eb7ee3a19da4afdeb65ce',
-    messagingSenderId: '704251086923',
-    projectId: 'storytelling-audio-app',
-    authDomain: 'storytelling-audio-app.firebaseapp.com',
-    storageBucket: 'storytelling-audio-app.firebasestorage.app',
-    measurementId: 'G-SVC1BRTRS5',
+    apiKey: 'AIzaSyA5BA0OxSlI-4PzPkAlLU-0_NIAEFgFPiM',
+    appId: '1:834509746782:web:1f73d0d7ad5baad083facf',
+    messagingSenderId: '834509746782',
+    projectId: 'storytelling-audio-web-bc2eb',
+    authDomain: 'storytelling-audio-web-bc2eb.firebaseapp.com',
+    storageBucket: 'storytelling-audio-web-bc2eb.firebasestorage.app',
+    measurementId: 'G-V46254GESR',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD4DTgWdKla7i_T6u1frvOTOCukCcrP0IE',
-    appId: '1:704251086923:android:d7eb9c2ba3f6f741eb65ce',
-    messagingSenderId: '704251086923',
-    projectId: 'storytelling-audio-app',
-    storageBucket: 'storytelling-audio-app.firebasestorage.app',
+    apiKey: 'AIzaSyB5aXqTfFFJCOU4pm3vfxexMC3r3mAPbQ0',
+    appId: '1:834509746782:android:5cb5c10699d9798a83facf',
+    messagingSenderId: '834509746782',
+    projectId: 'storytelling-audio-web-bc2eb',
+    storageBucket: 'storytelling-audio-web-bc2eb.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA6z4W0pfSv4G1dE8eezh86s9jrC7SxmxQ',
-    appId: '1:704251086923:ios:4fc76e65dbe0237beb65ce',
-    messagingSenderId: '704251086923',
-    projectId: 'storytelling-audio-app',
-    storageBucket: 'storytelling-audio-app.firebasestorage.app',
+    apiKey: 'AIzaSyD3vQeRLPTDcLDZzx-mEeD9FiqlzelHOF0',
+    appId: '1:834509746782:ios:1e31559b7249244e83facf',
+    messagingSenderId: '834509746782',
+    projectId: 'storytelling-audio-web-bc2eb',
+    storageBucket: 'storytelling-audio-web-bc2eb.firebasestorage.app',
     iosBundleId: 'com.example.storytellingAudioApp',
   );
-
 }
