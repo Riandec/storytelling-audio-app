@@ -171,9 +171,9 @@ class _CollectionPageState extends State<CollectionPage> {
               likedStoryData.isEmpty
                 ? Center(
                     child: Padding(
-                      padding: EdgeInsets.only(top: 100),
+                      padding: EdgeInsets.only(top: 50),
                       child: Text(
-                        'No stories in the collection yet',
+                        'No stories in the collection',
                         style: TextStyle(
                           fontSize: 16,
                           fontStyle: FontStyle.italic,

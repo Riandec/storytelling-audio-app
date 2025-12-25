@@ -201,6 +201,21 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
                 List<QueryDocumentSnapshot> data = snapshot.data!.docs; 
+                if (data.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Text(
+                        'No stories available',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey
+                        ),
+                      ),
+                    )
+                  );
+                }
                 if (!genreIndex.contains(0) && genreIndex.isNotEmpty) {
                   List<String> selectedGenreNames = genreIndex.map((i) => genres[i]).toList();
                   data = data.where((doc) {
@@ -321,74 +336,88 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: SizedBox(
-                        height: 220,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            final doc = data[index];
-                            final story = doc.data() as Map<String, dynamic>;
-                            return Padding(
-                              padding: EdgeInsets.only(right: 17),
-                              child: Column(
-                                children: [
-                                  // images
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: story)
-                                        )
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 113,
-                                      height: 170,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Color(0x3F000000),
-                                            blurRadius: 4,
-                                            offset: Offset(2, 2),
-                                            spreadRadius: 0,
+                    data.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Text(
+                              'No stories to recommend',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.grey
+                              ),
+                            ),
+                          )
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(left: 20),
+                          child: SizedBox(
+                            height: 220,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: data.length,
+                              itemBuilder: (context, index) {
+                                final doc = data[index];
+                                final story = doc.data() as Map<String, dynamic>;
+                                return Padding(
+                                  padding: EdgeInsets.only(right: 17),
+                                  child: Column(
+                                    children: [
+                                      // images
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: story)
+                                            )
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 113,
+                                          height: 170,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color(0x3F000000),
+                                                blurRadius: 4,
+                                                offset: Offset(2, 2),
+                                                spreadRadius: 0,
+                                              ),
+                                            ],
+                                            image: DecorationImage(
+                                              image: NetworkImage(story['coverUrl']),
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ],
-                                        image: DecorationImage(
-                                          image: NetworkImage(story['coverUrl']),
-                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  // story's titles
-                                  SizedBox(
-                                    width: 113,
-                                    height: 40,
-                                    child: Text(
-                                      story['title'],
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        height: 1.25,
+                                      SizedBox(height: 10),
+                                      // story's titles
+                                      SizedBox(
+                                        width: 113,
+                                        height: 40,
+                                        child: Text(
+                                          story['title'],
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            height: 1.25,
+                                          ),
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
                   ],
                 );
               },
@@ -423,126 +452,140 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20, bottom: 100),
-                      child: SizedBox(
-                        height: 240,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: data.length > 3 ? 3 : data.length,
-                          itemBuilder: (context, index) {
-                            final doc = data[index];
-                            final story = doc.data() as Map<String, dynamic>;
-                            return Padding(
-                              padding: EdgeInsets.only(right: 17),
-                              child: Column(
-                                children: [
-                                  // images
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: story)
-                                        )
-                                      );
-                                    },
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          width: 113,
-                                          height: 170,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x3F000000),
-                                                blurRadius: 4,
-                                                offset: Offset(2, 2),
-                                                spreadRadius: 0,
-                                              ),
-                                            ],
-                                            image: DecorationImage(
-                                              image: NetworkImage(story['coverUrl']),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          top: -25,
-                                          child: Text(
-                                            '${index+1}',
-                                            style: TextStyle(
-                                              fontSize: 42,
-                                              fontWeight: FontWeight.w900
-                                            ),
-                                          )
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  // rating
-                                  SizedBox(
-                                    width: 113,
-                                    height: 20,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [ 
-                                        ...List.generate(5, (starIndex){
-                                          IconData iconData;
-                                          Color iconColor;
-                                          if (starIndex < story['rating'].floor()) {
-                                            iconData = Icons.star_rounded;
-                                            iconColor = starActive;
-                                          } else if (starIndex < story['rating'].ceil() && story['rating'] % 1 != 0) {
-                                            iconData = Icons.star_half_rounded;
-                                            iconColor = starActive;
-                                          } else {
-                                            iconData = Icons.star_rounded;
-                                            iconColor = starInactive;
-                                          }
-                                          return Icon(
-                                            iconData,
-                                            size: 12,
-                                            color: iconColor,
-                                          );
-                                        }),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          '${story['rating'].toStringAsFixed(1)} stars',
-                                          style: TextStyle(
-                                            fontSize: 10
-                                          ),
-                                        )
-                                      ]
-                                    )
-                                  ),
-                                  SizedBox(height: 5),
-                                  // story's titles
-                                  SizedBox(
-                                    width: 113,
-                                    height: 40,
-                                    child: Text(
-                                      story['title'],
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        height: 1.25,
-                                      ),
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
+                    data.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Text(
+                              'No popular stories',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.grey
                               ),
-                            );
-                          },
+                            ),
+                          )
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(left: 20, bottom: 100),
+                          child: SizedBox(
+                            height: 240,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: data.length > 3 ? 3 : data.length,
+                              itemBuilder: (context, index) {
+                                final doc = data[index];
+                                final story = doc.data() as Map<String, dynamic>;
+                                return Padding(
+                                  padding: EdgeInsets.only(right: 17),
+                                  child: Column(
+                                    children: [
+                                      // images
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: story)
+                                            )
+                                          );
+                                        },
+                                        child: Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            Container(
+                                              width: 113,
+                                              height: 170,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x3F000000),
+                                                    blurRadius: 4,
+                                                    offset: Offset(2, 2),
+                                                    spreadRadius: 0,
+                                                  ),
+                                                ],
+                                                image: DecorationImage(
+                                                  image: NetworkImage(story['coverUrl']),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: -25,
+                                              child: Text(
+                                                '${index+1}',
+                                                style: TextStyle(
+                                                  fontSize: 42,
+                                                  fontWeight: FontWeight.w900
+                                                ),
+                                              )
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      // rating
+                                      SizedBox(
+                                        width: 113,
+                                        height: 20,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [ 
+                                            ...List.generate(5, (starIndex){
+                                              IconData iconData;
+                                              Color iconColor;
+                                              if (starIndex < story['rating'].floor()) {
+                                                iconData = Icons.star_rounded;
+                                                iconColor = starActive;
+                                              } else if (starIndex < story['rating'].ceil() && story['rating'] % 1 != 0) {
+                                                iconData = Icons.star_half_rounded;
+                                                iconColor = starActive;
+                                              } else {
+                                                iconData = Icons.star_rounded;
+                                                iconColor = starInactive;
+                                              }
+                                              return Icon(
+                                                iconData,
+                                                size: 12,
+                                                color: iconColor,
+                                              );
+                                            }),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              '${story['rating'].toStringAsFixed(1)} stars',
+                                              style: TextStyle(
+                                                fontSize: 10
+                                              ),
+                                            )
+                                          ]
+                                        )
+                                      ),
+                                      SizedBox(height: 5),
+                                      // story's titles
+                                      SizedBox(
+                                        width: 113,
+                                        height: 40,
+                                        child: Text(
+                                          story['title'],
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            height: 1.25,
+                                          ),
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
                   ],
                 );
               },
