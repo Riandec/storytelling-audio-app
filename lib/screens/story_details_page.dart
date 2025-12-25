@@ -349,10 +349,10 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
             right: 45,
             child: SizedBox(
               child: Text(
-                widget.storyData['content'][0]['text']['en'],
+                widget.storyData['outline'],
                 textAlign: TextAlign.justify,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: Colors.black
                 ),
                 maxLines: 8,
