@@ -13,10 +13,10 @@ class ListeningPage extends StatefulWidget {
 
 class _ListeningPageState extends State<ListeningPage> {
   int currentPage = 0;
-  bool subtitleEnabled = false;
+  bool subtitleEnabled = true;
   bool autoplayEnabled = false;
   bool sleepModeEnabled = false;
-  double fontSize = 50.0;
+  double fontSize = 1.0; // 0 = small, 1 = medium, 2 = large
   double voice = 50.0;
   double bgm = 50.0;
   double speed = 50.0;
@@ -65,7 +65,7 @@ class _ListeningPageState extends State<ListeningPage> {
           ),
           // subtitle
           Positioned(
-            bottom: 120,
+            bottom: 150,
             left: 10,
             right: 10,
             child: subtitleEnabled 
@@ -75,7 +75,7 @@ class _ListeningPageState extends State<ListeningPage> {
                   child: Text(
                     widget.storyData['content'][currentPage]['text'][language],
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: fontSize == 0 ? 14 : fontSize == 1 ? 18 : 22,
                       color: Colors.white
                     ),
                   ),
@@ -257,7 +257,8 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 child: Slider(
                                                   value: fontSize, 
                                                   min: 0,
-                                                  max: 100,
+                                                  max: 2,
+                                                  divisions: 2,
                                                   padding: EdgeInsets.zero,
                                                   onChanged: subtitleEnabled 
                                                   ? (value){
@@ -270,7 +271,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 )
                                               ),
                                               Text(
-                                                fontSize.toInt() <= 33 ? 'Small' : fontSize.toInt() <= 66 ? 'Medium' : 'Large', 
+                                                fontSize == 0 ? 'Small' : fontSize == 1 ? 'Medium' : 'Large', 
                                                 style: TextStyle(
                                                   fontSize: 12,
                                                   color: subtitleEnabled ? Colors.black : Colors.grey[400]
