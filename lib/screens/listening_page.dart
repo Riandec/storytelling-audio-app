@@ -23,6 +23,30 @@ class _ListeningPageState extends State<ListeningPage> {
   List<bool> languageSelected = [false, true];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        preCacheImages();
+      }
+    });
+  }
+
+  // load all images in content for fast fetch
+  // except first page because already loaded in story details page
+  void preCacheImages() {
+    List<dynamic> content = widget.storyData['content'];
+    for (int i = 1; i< content.length; i++) {
+      precacheImage(NetworkImage(content[i]['imageUrl']), context)
+        .then((_) {
+          print('Page ${i+1} image cached') ;
+        }).catchError((error) {
+          print('Error caching image $i: $error');
+        });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     int totalPages = widget.storyData['content'].length;
     String language = languageSelected[0] ? 'en' : 'th';
@@ -34,6 +58,10 @@ class _ListeningPageState extends State<ListeningPage> {
           Image.network(
             widget.storyData['content'][currentPage]['imageUrl'],
             fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return CircularProgressIndicator();
+            },
           ),
           // subtitle
           Positioned(
