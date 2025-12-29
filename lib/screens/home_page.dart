@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytelling_audio_app/screens/search_page.dart';
 import 'package:storytelling_audio_app/screens/collection_page.dart';
 import 'package:storytelling_audio_app/screens/setting_page.dart';
@@ -37,6 +38,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+  }
+  
+  // filter for recommended feature
+  Future<List<String>> _getFinishedStoryIds() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('finishedStoryIds') ?? [];
   }
 
   @override
@@ -307,11 +314,9 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            // unread stories
+            // recommended stories, unread only
             StreamBuilder<QuerySnapshot>(
-              stream: stories
-                  // .where('isRead', isEqualTo: false)
-                  .snapshots(),
+              stream: stories.snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
@@ -320,106 +325,119 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 }
-                final data = snapshot.data!.docs;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // recommended title
-                    Padding(
-                      padding: EdgeInsets.only(top: 20, left: 20),
-                      child: Text(
-                        "You may also like these stories",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    data.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Text(
-                              'No stories to recommend',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.grey
-                              ),
-                            ),
-                          )
-                        )
-                      : Padding(
-                          padding: EdgeInsets.only(left: 20),
-                          child: SizedBox(
-                            height: 220,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: data.length,
-                              itemBuilder: (context, index) {
-                                final doc = data[index];
-                                final story = doc.data() as Map<String, dynamic>;
-                                return Padding(
-                                  padding: EdgeInsets.only(right: 17),
-                                  child: Column(
-                                    children: [
-                                      // images
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: story)
-                                            )
-                                          );
-                                        },
-                                        child: Container(
-                                          width: 113,
-                                          height: 170,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Color(0x3F000000),
-                                                blurRadius: 4,
-                                                offset: Offset(2, 2),
-                                                spreadRadius: 0,
-                                              ),
-                                            ],
-                                            image: DecorationImage(
-                                              image: NetworkImage(story['coverUrl']),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      // story's titles
-                                      SizedBox(
-                                        width: 113,
-                                        height: 40,
-                                        child: Text(
-                                          story['title'],
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            height: 1.25,
-                                          ),
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
+                return FutureBuilder<List<String>>(
+                  future: _getFinishedStoryIds(),
+                  builder: (context, finishedSnapshot) {
+                    if (!finishedSnapshot.hasData) {
+                      return SizedBox.shrink();
+                    }
+                    List<String> finishedStoryIds = finishedSnapshot.data!;
+                    final data = snapshot.data!.docs;
+                    final unfinishedDocs = data.where((doc) {
+                      return !finishedStoryIds.contains(doc.id);
+                    }).toList();
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // recommended title
+                        Padding(
+                          padding: EdgeInsets.only(top: 20, left: 20),
+                          child: Text(
+                            "You may also like these stories",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                  ],
+                        SizedBox(height: 20),
+                        unfinishedDocs.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: Text(
+                                  'No stories to recommend',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.grey
+                                  ),
+                                ),
+                              )
+                            )
+                          : Padding(
+                              padding: EdgeInsets.only(left: 20),
+                              child: SizedBox(
+                                height: 220,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: unfinishedDocs.length,
+                                  itemBuilder: (context, index) {
+                                    final doc = unfinishedDocs[index];
+                                    final story = doc.data() as Map<String, dynamic>;
+                                    return Padding(
+                                      padding: EdgeInsets.only(right: 17),
+                                      child: Column(
+                                        children: [
+                                          // images
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => StoryDetailsPage(storyId: doc.id, storyData: story)
+                                                )
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 113,
+                                              height: 170,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(0x3F000000),
+                                                    blurRadius: 4,
+                                                    offset: Offset(2, 2),
+                                                    spreadRadius: 0,
+                                                  ),
+                                                ],
+                                                image: DecorationImage(
+                                                  image: NetworkImage(story['coverUrl']),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          // story's titles
+                                          SizedBox(
+                                            width: 113,
+                                            height: 40,
+                                            child: Text(
+                                              story['title'],
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                height: 1.25,
+                                              ),
+                                              maxLines: 2,
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                      ],
+                    );
+                  }
                 );
+                
               },
             ),
             // popular stories
@@ -596,11 +614,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-/*
-
-Unfinished
-
-- recommended
-
-*/
