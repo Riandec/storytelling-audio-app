@@ -201,8 +201,8 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
           // details 
           Positioned(
             top: 420,
-            left: 30,
-            right: 30,
+            left: 40,
+            right: 40,
             child: Column(
               children: [
                 // title
@@ -225,50 +225,52 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                 ),
                 SizedBox(height: 15),
                 // genres and rating
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...List.generate(widget.storyData['genres'].length, (index) {
-                      return Padding(
-                        padding: EdgeInsets.only(right: 6),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(20)
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                            child: Text(
-                              widget.storyData['genres'][index].toString(),
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white,
-                                letterSpacing: 1
-                              ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ...List.generate(widget.storyData['genres'].length, (index) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: 6),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                              child: Text(
+                                widget.storyData['genres'][index].toString(),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  letterSpacing: 1
+                                ),
+                              )
                             )
-                          )
-                        ),
-                      );
-                    }),
-                    SizedBox(width: 6),
-                    Icon(
-                      Icons.star_rounded,
-                      color: Color.fromRGBO(255, 227, 71, 1),
-                    ),
-                    SizedBox(width: 3),
-                    Text(
-                      '${widget.storyData['rating'].toStringAsFixed(1)} stars',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black
+                          ),
+                        );
+                      }),
+                      SizedBox(width: 6),
+                      Icon(
+                        Icons.star_rounded,
+                        color: Color.fromRGBO(255, 227, 71, 1),
                       ),
-                    )
-                  ],
+                      SizedBox(width: 3),
+                      Text(
+                        '${widget.storyData['rating'].toStringAsFixed(1)} stars',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black
+                        ),
+                      )
+                    ],
+                  ),
                 ),
                 SizedBox(height: 15),
                 // stats
                 Container(
-                  width: 320,
                   height: 35,
                   decoration: BoxDecoration(
                     border: Border(
@@ -277,51 +279,61 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     ),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Icon(
-                        Icons.timer_outlined,
-                        size: 20,
-                        color: Colors.black,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.timer_outlined,
+                            size: 20,
+                            color: Colors.black,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            '${widget.storyData['timing']} mins',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 5),
-                      Text(
-                        '${widget.storyData['timing']} mins',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
-                        ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.menu_book_rounded,
+                            size: 20,
+                            color: Colors.black,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            '${widget.storyData['ratingCount']} reads',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 15),
-                      Icon(
-                        Icons.menu_book_rounded,
-                        size: 20,
-                        color: Colors.black,
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        '${widget.storyData['ratingCount']} reads',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
-                        ),
-                      ),
-                      SizedBox(width: 15),
-                      Icon(
-                        Icons.favorite_outline_rounded,
-                        size: 20,
-                        color: Colors.black,
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        '${widget.storyData['likeCount']} likes',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
-                        ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.favorite_outline_rounded,
+                            size: 20,
+                            color: Colors.black,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            '${widget.storyData['likeCount']} likes',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -332,8 +344,8 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
           // about
           Positioned(
             top: 615,
-            left: 47,
-            right: 45,
+            left: 40,
+            right: 40,
             child: Text(
               'About ${widget.storyData['title']}',
               style: TextStyle(
@@ -344,9 +356,9 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
             ),
           ),
           Positioned(
-            top: 640,
-            left: 47,
-            right: 45,
+            top: 642,
+            left: 40,
+            right: 40,
             child: SizedBox(
               child: Text(
                 widget.storyData['outline'],
@@ -472,8 +484,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
 
 Unfinished
 
-- favourite
-- stat likes
+- timing
 - preview
 
 */
