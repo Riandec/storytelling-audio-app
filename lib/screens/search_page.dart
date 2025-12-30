@@ -258,7 +258,11 @@ class _SearchPageState extends State<SearchPage> {
                         future: searchStories(queryKeyword), 
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
+                            return Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation(Colors.black)
+                              )
+                            );
                           }
                           final data = snapshot.data!;
                           if (data.isEmpty) {

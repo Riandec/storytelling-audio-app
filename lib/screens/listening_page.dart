@@ -60,7 +60,11 @@ class _ListeningPageState extends State<ListeningPage> {
             fit: BoxFit.cover,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
-              return CircularProgressIndicator();
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Colors.black)
+                ),
+              );
             },
           ),
           // subtitle
