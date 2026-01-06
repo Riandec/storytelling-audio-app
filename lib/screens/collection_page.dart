@@ -254,7 +254,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                         height: 1.2
                                       ),
                                     ),
-                                    Text(isFinished ? '0 minute left' : '~ 10 minute left'),
+                                    Text(isFinished ? '0 minute left' : '~ ${story['timing']} minutes left'),
                                     SizedBox(height: 7),
                                     Stack(
                                       children: [
