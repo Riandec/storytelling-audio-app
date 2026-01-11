@@ -343,7 +343,7 @@ class _HomePageState extends State<HomePage> {
                         Padding(
                           padding: EdgeInsets.only(top: 20, left: 20),
                           child: Text(
-                            "You may also like these stories",
+                            "A story you haven't finish",
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
