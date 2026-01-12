@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:storytelling_audio_app/screens/rating_page.dart';
 
 class ListeningPage extends StatefulWidget {
@@ -17,10 +19,11 @@ class _ListeningPageState extends State<ListeningPage> {
   bool autoplayEnabled = false;
   bool sleepModeEnabled = false;
   double fontSize = 1.0; // 0 = small, 1 = medium, 2 = large
-  double voice = 50.0;
-  double bgm = 50.0;
-  double speed = 50.0;
+  double volume = 100.0;
+  double speed = 2.0; // 0 = 0, 1 = x0.5, 2 = x1, 3 = x1.5, 4 = x2
   List<bool> languageSelected = [false, true];
+  final player = AudioPlayer();
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -28,8 +31,48 @@ class _ListeningPageState extends State<ListeningPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         preCacheImages();
+        playAudio(); // play audio for the first page
       }
     });
+    /*
+
+    AUTOPLAY
+
+    */
+    // listen to audio complete event
+    player.onPlayerComplete.listen((event) {
+      int totalPages = widget.storyData['content'].length;
+      // autoplay next page if enabled and not last page
+      if (autoplayEnabled && currentPage < totalPages - 1) {
+        Future.delayed(Duration(milliseconds: 300), () {
+          if (mounted) {
+            setState(() {
+              currentPage++;
+            });
+            playAudio();
+          }
+        });
+      } 
+      // navigate to rating page when reached last page
+      else if (autoplayEnabled && currentPage >= totalPages - 1) {
+        Future.delayed(Duration(milliseconds: 300), () {
+          if (mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RatingPage(storyId: widget.storyId)
+              )
+            );
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   // load all images in content for fast fetch
@@ -43,6 +86,22 @@ class _ListeningPageState extends State<ListeningPage> {
         }).catchError((error) {
           print('Error caching image $i: $error');
         });
+    }
+  }
+
+  Future<void> playAudio() async {
+    try {
+      String audioUrl = widget.storyData['content'][currentPage]['audioUrl'];
+      await player.stop();
+      await player.setSource(UrlSource(audioUrl));
+      await player.setVolume(volume / 100);
+      await player.setPlaybackRate(speed / 2);
+      await player.resume();
+      setState(() {
+        isPlaying = true;
+      });
+    } catch (e) {
+      print('Error playing audio: $e');
     }
   }
 
@@ -143,7 +202,7 @@ class _ListeningPageState extends State<ListeningPage> {
                             alignment: Alignment.bottomCenter,
                             children: [
                               Container(
-                                height: 515,
+                                height: 500,
                                 width: 380,
                                 decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.5),
@@ -154,7 +213,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                 ),
                               ),
                               Container(
-                                height: 500,
+                                height: 485,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.only(
@@ -163,7 +222,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                   ),
                                 ),
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,13 +346,13 @@ class _ListeningPageState extends State<ListeningPage> {
                                       ),
                                       Divider(),
                                       Text('Audio'),
-                                      // voice
+                                      // volume
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(left: 20),
-                                            child: Text('Voice'),
+                                            child: Text('Volumn'),
                                           ),
                                           Column(
                                             children: [
@@ -303,20 +362,21 @@ class _ListeningPageState extends State<ListeningPage> {
                                                   thumbColor: Color.fromRGBO(0, 85, 255, 1),
                                                 ), 
                                                 child: Slider(
-                                                  value: voice, 
+                                                  value: volume, 
                                                   min: 0,
                                                   max: 100,
                                                   padding: EdgeInsets.zero,
                                                   onChanged: (value){
                                                     setModalState(() {
-                                                      voice = value;
+                                                      volume = value;
                                                     });
                                                     setState(() {});
+                                                    player.setVolume(volume / 100);
                                                   }
                                                 )
                                               ),
                                               Text(
-                                                '${voice.toInt()}%', 
+                                                '${volume.toInt()}%', 
                                                 style: TextStyle(
                                                   fontSize: 12,
                                                 ),
@@ -325,50 +385,14 @@ class _ListeningPageState extends State<ListeningPage> {
                                           )
                                         ],
                                       ),
-                                      // bgm
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(left: 20),
-                                            child: Text('BGM'),
-                                          ),
-                                          Column(
-                                            children: [
-                                              SliderTheme(
-                                                data: SliderTheme.of(context).copyWith(
-                                                  activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                                                  thumbColor: Color.fromRGBO(0, 85, 255, 1),
-                                                ), 
-                                                child: Slider(
-                                                  value: bgm, 
-                                                  min: 0,
-                                                  max: 100,
-                                                  padding: EdgeInsets.zero,
-                                                  onChanged: (value){
-                                                    setModalState(() {
-                                                      bgm = value;
-                                                    });
-                                                    setState(() {});
-                                                  }
-                                                )
-                                              ),
-                                              Text(
-                                                '${bgm.toInt()}%', 
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      Divider(),
                                       // speed
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text('Speed'),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 20),
+                                            child: Text('Speed'),
+                                          ),
                                           Column(
                                             children: [
                                               SliderTheme(
@@ -379,18 +403,20 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 child: Slider(
                                                   value: speed, 
                                                   min: 0,
-                                                  max: 100,
+                                                  max: 4,
+                                                  divisions: 4,
                                                   padding: EdgeInsets.zero,
                                                   onChanged: (value){
                                                     setModalState(() {
                                                       speed = value;
                                                     });
                                                     setState(() {});
+                                                    player.setPlaybackRate(speed / 2);
                                                   }
                                                 )
                                               ),
                                               Text(
-                                                '${speed.toInt()}%', 
+                                                speed == 0 ? 'x0' : speed == 1 ? 'x0.5' : speed == 2 ? 'x1' : speed == 3 ? 'x1.5' : 'x2',
                                                 style: TextStyle(
                                                   fontSize: 12,
                                                 ),
@@ -512,6 +538,8 @@ class _ListeningPageState extends State<ListeningPage> {
                   onPressed: currentPage > 0 ? (){
                     setState(() {
                       currentPage--;
+                      autoplayEnabled = false;
+                      playAudio();
                     });
                   }
                   : null, 
@@ -537,20 +565,12 @@ class _ListeningPageState extends State<ListeningPage> {
                   ),
                 ),
                 IconButton(
-                  /*
-                  onPressed: currentPage < totalPages-1 ? (){
-                    setState(() {
-                      currentPage++;
-                    });
-                  }
-                  : null, 
-                  */
-
-                  // to display the rating page before supporting audio play
                   onPressed: (){
                     setState(() {
                       if (currentPage < totalPages - 1) {
                         currentPage++;
+                        autoplayEnabled = false;
+                        playAudio();
                       } else {
                         Navigator.push(
                           context,
@@ -589,6 +609,5 @@ class _ListeningPageState extends State<ListeningPage> {
 Unfinished
 
 - setting
-- sync audio
 
 */
