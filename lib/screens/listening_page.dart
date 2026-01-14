@@ -15,15 +15,22 @@ class ListeningPage extends StatefulWidget {
 
 class _ListeningPageState extends State<ListeningPage> {
   int currentPage = 0;
+  // subtitle setting
   bool subtitleEnabled = true;
-  bool autoplayEnabled = false;
-  bool sleepModeEnabled = false;
+  List<bool> languageSelected = [false, true];
   double fontSize = 1.0; // 0 = small, 1 = medium, 2 = large
+  // audio setting
+  bool autoplayEnabled = false;
   double volume = 100.0;
   double speed = 2.0; // 0 = 0, 1 = x0.5, 2 = x1, 3 = x1.5, 4 = x2
-  List<bool> languageSelected = [false, true];
   final player = AudioPlayer();
   bool isPlaying = false;
+  // timer setting
+  bool sleepModeEnabled = false;
+  Timer? timer;
+  int sleepMinutes = 1;
+  int remainingSeconds = 0;
+  List<int> sleepOptions = [1, 5, 10, 15, 30];
 
   @override
   void initState() {
@@ -44,7 +51,7 @@ class _ListeningPageState extends State<ListeningPage> {
       int totalPages = widget.storyData['content'].length;
       // autoplay next page if enabled and not last page
       if (autoplayEnabled && currentPage < totalPages - 1) {
-        Future.delayed(Duration(milliseconds: 300), () {
+        Future.delayed(Duration(milliseconds: 500), () {
           if (mounted) {
             setState(() {
               currentPage++;
@@ -55,7 +62,7 @@ class _ListeningPageState extends State<ListeningPage> {
       } 
       // navigate to rating page when reached last page
       else if (autoplayEnabled && currentPage >= totalPages - 1) {
-        Future.delayed(Duration(milliseconds: 300), () {
+        Future.delayed(Duration(milliseconds: 500), () {
           if (mounted) {
             Navigator.push(
               context,
@@ -72,6 +79,7 @@ class _ListeningPageState extends State<ListeningPage> {
   @override
   void dispose() {
     player.dispose();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -103,6 +111,62 @@ class _ListeningPageState extends State<ListeningPage> {
     } catch (e) {
       print('Error playing audio: $e');
     }
+  }
+
+  void startTimer() {
+    timer?.cancel();
+    remainingSeconds = sleepMinutes * 60;
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+        } else {
+          player.pause();
+          isPlaying = false;
+          sleepModeEnabled = false;
+          autoplayEnabled = false;
+          timer.cancel();
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(
+                  'Time reached!', 
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold
+                  )
+                ),
+                content: Text(
+                  "Audio playback has been paused.\nWe hope you're fast asleep",
+                  style: TextStyle(
+                    fontSize: 16
+                  )
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('OK'),
+                  ),
+                ],
+              ),
+            );
+          }
+        }
+      });
+    });
+  }
+
+  void cancelTimer() {
+    timer?.cancel();
+    setState(() {
+      remainingSeconds = 0;
+    });
+  }
+
+  String formatTime(int secs) {
+    int minutes = secs ~/ 60;
+    int seconds = secs % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -463,6 +527,11 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 sleepModeEnabled = value;
                                               });
                                               setState(() {});
+                                              if (sleepModeEnabled) {
+                                                startTimer();
+                                              } else {
+                                                cancelTimer();
+                                              }
                                             },
                                             inactiveThumbColor: Colors.white,
                                             activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
@@ -488,11 +557,30 @@ class _ListeningPageState extends State<ListeningPage> {
                                               ),
                                             ),
                                           ),
-                                          Text(
-                                            '30 minutes',
-                                            style: TextStyle(
-                                              color: sleepModeEnabled ? Colors.black : Colors.grey[400]
-                                            ),
+                                          DropdownButton(
+                                            value: sleepMinutes,
+                                            items: sleepOptions.map((int minutes){
+                                              return DropdownMenuItem(
+                                                value: minutes,
+                                                child: Text(
+                                                  '$minutes minutes',
+                                                  style: TextStyle(
+                                                    color: sleepModeEnabled ? Colors.black : Colors.grey[400]
+                                                  ),
+                                                )
+                                              );
+                                            }).toList(), 
+                                            onChanged: sleepModeEnabled 
+                                              ? (int? newValue) {
+                                                  if (newValue != null) {
+                                                    setModalState(() {
+                                                      sleepMinutes = newValue;
+                                                    });
+                                                    setState(() {});
+                                                    startTimer();
+                                                  }
+                                                }
+                                              : null,
                                           )
                                         ],
                                       )
@@ -597,17 +685,39 @@ class _ListeningPageState extends State<ListeningPage> {
                 ),
               ],
             )
-          )
+          ),
+          // timer
+          if (sleepModeEnabled && remainingSeconds > 0)
+            Positioned(
+              bottom: 10,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                color: Colors.grey[800],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.bedtime_rounded,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      formatTime(remainingSeconds),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    )
+                  ],
+                )
+              )
+            )
         ],
       ),
     );
   }
 }
-
-/*
-
-Unfinished
-
-- setting
-
-*/
