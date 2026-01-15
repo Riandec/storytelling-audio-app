@@ -13,12 +13,14 @@ class _CollectionPageState extends State<CollectionPage> {
   List<String> likedStoryIds = [];
   List<Map<String, dynamic>> likedStoryData = [];
   List<String> finishedStoryIds = [];
+  int totalMinutes = 0;
 
   @override
   void initState() {
     super.initState();
     loadLikedStories();
     loadFinishedStories();
+    loadListeningTime();
   }
 
   // load liked stories from shared preferences
@@ -64,6 +66,17 @@ class _CollectionPageState extends State<CollectionPage> {
     });
     //debug
     print('Finished Story IDs: $finishedStoryIds');
+  }
+
+  // load total listening time from shared preferences
+  Future<void> loadListeningTime() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int totalSeconds = prefs.getInt('accumulateTime') ?? 0; // in seconds
+    setState(() {
+      totalMinutes = totalSeconds ~/ 60; // convert to minutes
+    });
+    //debug
+    print('Total listening time: $totalSeconds seconds');
   }
 
   @override
@@ -127,7 +140,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     children: [
                       Image.asset('assets/images/time-of-listening.png', height: 90),
                       Text(
-                        '0 minutes',
+                        '$totalMinutes ${totalMinutes == 1 ? "minute" : "minutes"}',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,

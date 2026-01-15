@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytelling_audio_app/screens/rating_page.dart';
 
 class ListeningPage extends StatefulWidget {
@@ -31,6 +32,9 @@ class _ListeningPageState extends State<ListeningPage> {
   int sleepMinutes = 1;
   int remainingSeconds = 0;
   List<int> sleepOptions = [1, 5, 10, 15, 30];
+  // listening time
+  int listenedSeconds = 0;
+  DateTime? updateTime;
 
   @override
   void initState() {
@@ -74,10 +78,18 @@ class _ListeningPageState extends State<ListeningPage> {
         });
       }
     });
+
+    // count listening time every second
+    player.onPositionChanged.listen((position) {
+      if (isPlaying) {
+        saveListeningTime();
+      }
+    });
   }
 
   @override
   void dispose() {
+    saveListeningTime();
     player.dispose();
     timer?.cancel();
     super.dispose();
@@ -167,6 +179,19 @@ class _ListeningPageState extends State<ListeningPage> {
     int minutes = secs ~/ 60;
     int seconds = secs % 60;
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  // save listened time to shared preferences
+  Future<void> saveListeningTime() async {
+    final now = DateTime.now();
+    // if last update was more than 1 second
+    if (updateTime == null || now.difference(updateTime!).inSeconds >= 1) {
+      listenedSeconds++;
+      updateTime = now;
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      int currentTotal = prefs.getInt('accumulateTime') ?? 0;
+      await prefs.setInt('accumulateTime', currentTotal + 1);
+    }
   }
 
   @override
