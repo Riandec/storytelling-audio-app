@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +14,9 @@ class _CollectionPageState extends State<CollectionPage> {
   List<String> likedStoryIds = [];
   List<Map<String, dynamic>> likedStoryData = [];
   List<String> finishedStoryIds = [];
-  int totalMinutes = 0;
+  Map<String, int> listeningProgress = {};
+  int accumulateTime = 0;
+  Map<String, Map<String, dynamic>> storyProgress = {}; // e.g. {storyId: {percent: 50, remainingSeconds: 65}}
 
   @override
   void initState() {
@@ -21,6 +24,7 @@ class _CollectionPageState extends State<CollectionPage> {
     loadLikedStories();
     loadFinishedStories();
     loadListeningTime();
+    loadAllProgress();
   }
 
   // load liked stories from shared preferences
@@ -53,6 +57,7 @@ class _CollectionPageState extends State<CollectionPage> {
       setState(() {
         likedStoryData = stories;
       });
+      calculateProgress();
     }
     //debug
     print('Loaded ${likedStoryData.length} stories');
@@ -68,15 +73,82 @@ class _CollectionPageState extends State<CollectionPage> {
     print('Finished Story IDs: $finishedStoryIds');
   }
 
-  // load total listening time from shared preferences
+  // load accumulate listening time from shared preferences
   Future<void> loadListeningTime() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int totalSeconds = prefs.getInt('accumulateTime') ?? 0; // in seconds
+    int seconds = prefs.getInt('accumulateTime') ?? 0; // in seconds
     setState(() {
-      totalMinutes = totalSeconds ~/ 60; // convert to minutes
+      accumulateTime = seconds;
     });
     //debug
-    print('Total listening time: $totalSeconds seconds');
+    print('Accumulate listening time: $accumulateTime seconds');
+  }
+
+  // load all listening progress from shared preferences
+  Future<void> loadAllProgress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? progressStr = prefs.getString('listeningProgress');
+    if (progressStr != null) {
+      Map<String, dynamic> progressMap = jsonDecode(progressStr);
+      setState(() {
+        // convert dynamic to int
+        listeningProgress = progressMap.map((key, value) => MapEntry(key, value as int));
+      });
+      calculateProgress();
+    }
+    //debug
+    print('Loaded progress: $listeningProgress seconds');
+  }
+
+  // calculate story progress percentages and remaining minutes
+  void calculateProgress() {
+    Map<String, Map<String, dynamic>> progress = {};
+    for (var story in likedStoryData) {
+      String storyId = story['documentId'];
+      int totalMinutes = story['timing'];
+      bool isFinished = finishedStoryIds.contains(storyId);
+      if (isFinished) {
+        progress[storyId] = {
+          'percent': 100,
+          'remainingSeconds': 0
+        };
+      } else {
+        int listenedSeconds = listeningProgress[storyId] ?? 0;
+        int totalSeconds = totalMinutes * 60;
+        // calculate percentage
+        int percent = totalSeconds == 0 ? 0 : ((listenedSeconds / totalSeconds) * 100).round();
+        if (percent > 100) {
+          percent = 100;
+        }
+        // calculate remaining minutes
+        int remainingSeconds = totalSeconds - listenedSeconds;
+        if (remainingSeconds < 0) {
+          remainingSeconds = 0;
+        }
+
+        progress[storyId] = {
+          'percent': percent,
+          'remainingSeconds': remainingSeconds
+        };
+      }
+    }
+    setState(() {
+      storyProgress = progress;
+    });
+    //debug
+    print('Story progress: $storyProgress');
+  }
+
+  String formatTime(int secs) {
+    int minutes = secs ~/ 60;
+    int seconds = secs % 60;
+    if (secs < 60) {
+      return '$secs ${secs == 1 ? "second" : "seconds"}';
+    } else if (secs % 60 == 0) {
+      return '$minutes ${minutes == 1 ? "minute" : "minutes"}';
+    } else {
+      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')} ${minutes == 1 ? "minute" : "minutes"}';
+    }
   }
 
   @override
@@ -140,7 +212,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     children: [
                       Image.asset('assets/images/time-of-listening.png', height: 90),
                       Text(
-                        '$totalMinutes ${totalMinutes == 1 ? "minute" : "minutes"}',
+                        formatTime(accumulateTime),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -258,8 +330,9 @@ class _CollectionPageState extends State<CollectionPage> {
                                       ),
                                     ),
                                     Text(isFinished ? 'Finished' : 'Recently listened'),
+                                    // percentage
                                     Text(
-                                      isFinished ? '100%' : '0%',
+                                      '${storyProgress[story['documentId']]?['percent'] ?? 0}%',
                                       style: TextStyle(
                                         fontFamily: 'Rubik Scribble',
                                         fontSize: 35,
@@ -267,8 +340,12 @@ class _CollectionPageState extends State<CollectionPage> {
                                         height: 1.2
                                       ),
                                     ),
-                                    Text(isFinished ? '0 minute left' : '~ ${story['timing']} minutes left'),
+                                    // remaining seconds
+                                    Text(
+                                      '~ ${formatTime(storyProgress[story['documentId']]?['remainingSeconds'] ?? story['timing'] * 60)} left'
+                                    ),
                                     SizedBox(height: 7),
+                                    // progress bar
                                     Stack(
                                       children: [
                                         Container(
@@ -280,7 +357,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                           ),
                                         ),
                                         Container(
-                                          width: isFinished ? 190 : 0,
+                                          width: 190 * (storyProgress[story['documentId']]?['percent'] ?? 0) / 100,
                                           height: 5,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),

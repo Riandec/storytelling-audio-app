@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -33,8 +34,9 @@ class _ListeningPageState extends State<ListeningPage> {
   int remainingSeconds = 0;
   List<int> sleepOptions = [1, 5, 10, 15, 30];
   // listening time
-  int listenedSeconds = 0;
   DateTime? updateTime;
+  int totalListenedSeconds = 0; // progress listened seconds since first page for current story
+  List<int> pagesTiming = [];
 
   @override
   void initState() {
@@ -42,16 +44,18 @@ class _ListeningPageState extends State<ListeningPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         preCacheImages();
+        loadPagesTiming();
+        loadProgress();
         playAudio(); // play audio for the first page
       }
     });
-    /*
-
-    AUTOPLAY
-
-    */
+    
+    // autoplay
     // listen to audio complete event
     player.onPlayerComplete.listen((event) {
+      setState(() {
+        isPlaying = false;
+      });
       int totalPages = widget.storyData['content'].length;
       // autoplay next page if enabled and not last page
       if (autoplayEnabled && currentPage < totalPages - 1) {
@@ -81,15 +85,22 @@ class _ListeningPageState extends State<ListeningPage> {
 
     // count listening time every second
     player.onPositionChanged.listen((position) {
-      if (isPlaying) {
+      if (isPlaying && pagesTiming.isNotEmpty) {
+        // calculate total listened seconds
+        int totalPreviousPageTime = 0;
+        for (int i = 0; i < currentPage; i++) {
+          totalPreviousPageTime += pagesTiming[i];
+        }
+        totalListenedSeconds = totalPreviousPageTime + position.inSeconds;
         saveListeningTime();
+        saveProgress();
       }
     });
   }
 
   @override
   void dispose() {
-    saveListeningTime();
+    saveProgress();
     player.dispose();
     timer?.cancel();
     super.dispose();
@@ -116,6 +127,33 @@ class _ListeningPageState extends State<ListeningPage> {
       await player.setSource(UrlSource(audioUrl));
       await player.setVolume(volume / 100);
       await player.setPlaybackRate(speed / 2);
+      // seek if there is saved progress
+      if (totalListenedSeconds > 0 && pagesTiming.isNotEmpty) {
+        int seekTime = totalListenedSeconds;
+        int accumulateTime = 0;
+        // find the page where the seek time belong to
+        for (int i = 0; i < pagesTiming.length; i++) {
+          if (seekTime < accumulateTime + pagesTiming[i]) {
+            // this page
+            setState(() {
+              currentPage = i;
+            });
+            // seek to the position in this page
+            int position = seekTime - accumulateTime;
+            // load audio of this page
+            String pageAudioUrl = widget.storyData['content'][currentPage]['audioUrl'];
+            await player.setSource(UrlSource(pageAudioUrl));
+            await player.setVolume(volume / 100);
+            await player.setPlaybackRate(speed / 2);
+            await player.seek(Duration(seconds: position));
+            print('Seeking to page $i at $position seconds');
+            break;
+          }
+          accumulateTime += pagesTiming[i];
+        }
+        // reset
+        totalListenedSeconds = 0;
+      }
       await player.resume();
       setState(() {
         isPlaying = true;
@@ -186,12 +224,56 @@ class _ListeningPageState extends State<ListeningPage> {
     final now = DateTime.now();
     // if last update was more than 1 second
     if (updateTime == null || now.difference(updateTime!).inSeconds >= 1) {
-      listenedSeconds++;
       updateTime = now;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       int currentTotal = prefs.getInt('accumulateTime') ?? 0;
       await prefs.setInt('accumulateTime', currentTotal + 1);
     }
+  }
+
+  // save listening progress
+  Future<void> saveProgress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // load existing progress map
+    String? progressStr = prefs.getString('listeningProgress');
+    Map<String, dynamic> progressMap = {};
+    if (progressStr != null) {
+      progressMap = json.decode(progressStr);
+    }
+    // update the position for current story
+    progressMap[widget.storyId] = totalListenedSeconds;
+    // save back to shared preferences
+    await prefs.setString('listeningProgress', jsonEncode(progressMap));
+    print('Saved progress for ${widget.storyId}: $totalListenedSeconds seconds');
+  }
+
+  // load listening progress of each story
+  Future<void> loadProgress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? progressStr = prefs.getString('listeningProgress');
+    if (progressStr != null) {
+      // convert string to map
+      Map<String, dynamic> progressMap = jsonDecode(progressStr);
+      // load the saved position
+      if (progressMap.containsKey(widget.storyId)) {
+        setState(() {
+          totalListenedSeconds = progressMap[widget.storyId];
+        });
+        // print('Loaded progress for ${widget.storyId}: $totalListenedSeconds seconds');
+      }
+    }
+  }
+
+  void loadPagesTiming() {
+    List<dynamic> content = widget.storyData['content'];
+    List<int> timings = [];
+    for (var page in content) {
+      timings.add(page['pageTiming']);
+    }
+    setState(() {
+      pagesTiming = timings;
+    });
+    // print('Page timings: $pagesTiming');
   }
 
   @override
