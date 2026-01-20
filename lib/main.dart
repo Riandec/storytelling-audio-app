@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:storytelling_audio_app/screens/home_page.dart';
+import 'package:storytelling_audio_app/screens/privacy_page.dart';
 import 'firebase_options_loader.dart';
 
 void main() async {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true
       ),
       debugShowCheckedModeBanner: true,
-      home: HomePage(),
+      home: PrivacyPage(),
     );
   }
 }

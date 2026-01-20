@@ -133,11 +133,3 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 }
-
-/*
-
-Unfinished
-
-- navigate to each setting detail page
-
-*/
