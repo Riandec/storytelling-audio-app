@@ -89,12 +89,9 @@ class _ListeningPageState extends State<ListeningPage> {
         for (int i = 0; i < currentPage; i++) {
           totalPreviousPageTime += pagesTiming[i];
         }
-        int newTotalListenedSeconds = totalPreviousPageTime + position.inSeconds;
-        if (newTotalListenedSeconds >= totalListenedSeconds) {
-          totalListenedSeconds = newTotalListenedSeconds;
-          saveListeningTime();
-          saveProgress();
-        }
+        totalListenedSeconds = totalPreviousPageTime + position.inSeconds;
+        saveListeningTime();
+        saveProgress();
       }
     });
   }
