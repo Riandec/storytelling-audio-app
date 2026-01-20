@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storytelling_audio_app/screens/listening_page.dart';
 
 class CollectionPage extends StatefulWidget {
   const CollectionPage({super.key});
@@ -76,12 +77,12 @@ class _CollectionPageState extends State<CollectionPage> {
   // load accumulate listening time from shared preferences
   Future<void> loadListeningTime() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int seconds = prefs.getInt('accumulateTime') ?? 0; // in seconds
+    int totalSeconds = prefs.getInt('accumulateTime') ?? 0; // in seconds
     setState(() {
-      accumulateTime = seconds;
+      accumulateTime = totalSeconds ~/ 60; // convert to minutes
     });
     //debug
-    print('Accumulate listening time: $accumulateTime seconds');
+    print('Accumulate listening time: $totalSeconds seconds');
   }
 
   // load all listening progress from shared preferences
@@ -96,8 +97,6 @@ class _CollectionPageState extends State<CollectionPage> {
       });
       calculateProgress();
     }
-    //debug
-    print('Loaded progress: $listeningProgress seconds');
   }
 
   // calculate story progress percentages and remaining minutes
@@ -212,7 +211,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     children: [
                       Image.asset('assets/images/time-of-listening.png', height: 90),
                       Text(
-                        formatTime(accumulateTime),
+                        '$accumulateTime ${accumulateTime == 1 ? "minute" : "minutes"}',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -293,27 +292,40 @@ class _CollectionPageState extends State<CollectionPage> {
                               Positioned(
                                 left: 10,
                                 bottom: 15,
-                                child: Container(
-                                  width: 113,
-                                  height: 154,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x3F000000),
-                                        blurRadius: 4,
-                                        offset: Offset(0, 4),
-                                        spreadRadius: 0,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context, 
+                                      MaterialPageRoute(
+                                        builder: (context) => ListeningPage(storyId: story['documentId'], storyData: story)
                                       )
-                                    ]
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.network(
-                                      story['coverUrl'],
-                                      fit: BoxFit.cover
+                                    ).then((_) {
+                                      loadListeningTime();
+                                      loadAllProgress();
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 113,
+                                    height: 154,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0x3F000000),
+                                          blurRadius: 4,
+                                          offset: Offset(0, 4),
+                                          spreadRadius: 0,
+                                        )
+                                      ]
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                        story['coverUrl'],
+                                        fit: BoxFit.cover
+                                      )
                                     )
-                                  )
+                                  ),
                                 )
                               ),
                               // text

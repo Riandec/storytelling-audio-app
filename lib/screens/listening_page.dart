@@ -44,9 +44,7 @@ class _ListeningPageState extends State<ListeningPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         preCacheImages();
-        loadPagesTiming();
-        loadProgress();
-        playAudio(); // play audio for the first page
+        resumeAudio();
       }
     });
     
@@ -91,9 +89,12 @@ class _ListeningPageState extends State<ListeningPage> {
         for (int i = 0; i < currentPage; i++) {
           totalPreviousPageTime += pagesTiming[i];
         }
-        totalListenedSeconds = totalPreviousPageTime + position.inSeconds;
-        saveListeningTime();
-        saveProgress();
+        int newTotalListenedSeconds = totalPreviousPageTime + position.inSeconds;
+        if (newTotalListenedSeconds >= totalListenedSeconds) {
+          totalListenedSeconds = newTotalListenedSeconds;
+          saveListeningTime();
+          saveProgress();
+        }
       }
     });
   }
@@ -127,39 +128,57 @@ class _ListeningPageState extends State<ListeningPage> {
       await player.setSource(UrlSource(audioUrl));
       await player.setVolume(volume / 100);
       await player.setPlaybackRate(speed / 2);
-      // seek if there is saved progress
-      if (totalListenedSeconds > 0 && pagesTiming.isNotEmpty) {
-        int seekTime = totalListenedSeconds;
-        int accumulateTime = 0;
-        // find the page where the seek time belong to
-        for (int i = 0; i < pagesTiming.length; i++) {
-          if (seekTime < accumulateTime + pagesTiming[i]) {
-            // this page
-            setState(() {
-              currentPage = i;
-            });
-            // seek to the position in this page
-            int position = seekTime - accumulateTime;
-            // load audio of this page
-            String pageAudioUrl = widget.storyData['content'][currentPage]['audioUrl'];
-            await player.setSource(UrlSource(pageAudioUrl));
-            await player.setVolume(volume / 100);
-            await player.setPlaybackRate(speed / 2);
-            await player.seek(Duration(seconds: position));
-            print('Seeking to page $i at $position seconds');
-            break;
-          }
-          accumulateTime += pagesTiming[i];
-        }
-        // reset
-        totalListenedSeconds = 0;
-      }
       await player.resume();
       setState(() {
         isPlaying = true;
       });
     } catch (e) {
       print('Error playing audio: $e');
+    }
+  }
+
+  Future<void> resumeAudio() async {
+    loadPagesTiming();
+    await loadProgress();
+    // seek if there is saved progress
+    if (totalListenedSeconds > 0 && pagesTiming.isNotEmpty) {
+      int seekTime = totalListenedSeconds;
+      int accumulateTime = 0;
+      int targetPage = 0;
+      int targetPosition = 0;
+      // find the page where the seek time belong to
+      for (int i = 0; i < pagesTiming.length; i++) {
+        if (seekTime < accumulateTime + pagesTiming[i]) {
+          targetPage = i;
+          // seek to the position in this page
+          targetPosition = seekTime - accumulateTime;
+          break;
+        }
+        accumulateTime += pagesTiming[i];
+      }
+      // this page
+      setState(() {
+        currentPage = targetPage;
+      });
+
+      // load audio of this page
+      try {
+        String audioUrl = widget.storyData['content'][currentPage]['audioUrl'];
+        await player.setSource(UrlSource(audioUrl));
+        await player.setVolume(volume / 100);
+        await player.setPlaybackRate(speed / 2);
+        await player.seek(Duration(seconds: targetPosition));
+        await player.resume();
+        setState(() {
+          isPlaying = true;
+        });
+        print('Seeking to page $targetPage at $targetPosition seconds');
+      } catch (e) {
+        print('Error resuming audio: $e');
+      }
+    } else {
+      // play first page audio if no progress
+      playAudio();
     }
   }
 
@@ -259,7 +278,7 @@ class _ListeningPageState extends State<ListeningPage> {
         setState(() {
           totalListenedSeconds = progressMap[widget.storyId];
         });
-        // print('Loaded progress for ${widget.storyId}: $totalListenedSeconds seconds');
+        print('Loaded progress for ${widget.storyId}: $totalListenedSeconds seconds');
       }
     }
   }
@@ -273,7 +292,6 @@ class _ListeningPageState extends State<ListeningPage> {
     setState(() {
       pagesTiming = timings;
     });
-    // print('Page timings: $pagesTiming');
   }
 
   @override
