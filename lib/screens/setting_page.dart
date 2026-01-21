@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:storytelling_audio_app/screens/about_page.dart';
+import 'package:storytelling_audio_app/screens/faq_page.dart';
 import 'package:storytelling_audio_app/screens/privacy_page.dart';
 
 class SettingPage extends StatefulWidget {
@@ -85,7 +87,7 @@ class _SettingPageState extends State<SettingPage> {
                     },
                     inactiveThumbColor: Colors.white,
                     activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                    inactiveTrackColor: const Color.fromARGB(255, 213, 208, 214),
+                    inactiveTrackColor: Color.fromARGB(255, 213, 208, 214),
                     trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
                       if (states.contains(WidgetState.selected)) {
                         return Colors.transparent;
@@ -113,7 +115,7 @@ class _SettingPageState extends State<SettingPage> {
                     },
                     inactiveThumbColor: Colors.white,
                     activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                    inactiveTrackColor: const Color.fromARGB(255, 213, 208, 214),
+                    inactiveTrackColor: Color.fromARGB(255, 213, 208, 214),
                     trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
                       if (states.contains(WidgetState.selected)) {
                         return Colors.transparent;
@@ -145,9 +147,17 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 Divider(),
                 ListTile(
-                  leading: Icon(Icons.headphones_outlined, color: Colors.black),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FAQPage()
+                      )
+                    );
+                  },
+                  leading: Icon(Icons.textsms_outlined, color: Colors.black),
                   title: Text(
-                    'Help and Support',
+                    'Help and FAQ',
                     style: TextStyle(
                       letterSpacing: 1
                     ),
@@ -157,9 +167,17 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 Divider(),
                 ListTile(
-                  leading: Icon(Icons.question_mark_rounded, color: Colors.black),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AboutPage()
+                      )
+                    );
+                  },
+                  leading: Icon(Icons.info_outline, color: Colors.black),
                   title: Text(
-                    'About',
+                    'About Us',
                     style: TextStyle(
                       letterSpacing: 1
                     ),
