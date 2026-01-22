@@ -43,6 +43,7 @@ dependencies:
   image_pixels: ^4.0.2
   flutter_dotenv: ^6.0.0
   audioplayers: ^6.5.1
+  firebase_messaging: ^16.1.1
 
 dev_dependencies:
   flutter_test:
