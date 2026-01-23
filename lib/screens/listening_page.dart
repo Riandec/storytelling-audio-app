@@ -307,7 +307,7 @@ class _ListeningPageState extends State<ListeningPage> {
               if (loadingProgress == null) return child;
               return Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(Colors.black)
+                  valueColor: AlwaysStoppedAnimation(Colors.grey)
                 ),
               );
             },
@@ -822,7 +822,7 @@ class _ListeningPageState extends State<ListeningPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.bedtime_rounded,
+                      Icons.bedtime,
                       color: Colors.white,
                       size: 16,
                     ),

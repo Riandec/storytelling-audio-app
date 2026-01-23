@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
 
 class FAQPage extends StatefulWidget {
   const FAQPage({super.key});
@@ -34,6 +36,8 @@ class _FAQPageState extends State<FAQPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
+
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -56,7 +60,6 @@ class _FAQPageState extends State<FAQPage> {
                 ),
                 child: Icon(
                   Icons.arrow_back_rounded, 
-                  color: Colors.white, 
                   size: 30
                 )
               )
@@ -77,7 +80,9 @@ class _FAQPageState extends State<FAQPage> {
                   // question
                   Container(
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 241, 237, 244),
+                      color: isDarkTheme 
+                        ? Color.fromRGBO(36, 36, 42, 1)
+                        : Color.fromARGB(255, 241, 237, 244),
                       borderRadius: BorderRadius.circular(10)
                     ),
                     child: ListTile(

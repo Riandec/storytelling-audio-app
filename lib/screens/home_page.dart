@@ -3,6 +3,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
 import 'package:storytelling_audio_app/screens/search_page.dart';
 import 'package:storytelling_audio_app/screens/collection_page.dart';
 import 'package:storytelling_audio_app/screens/setting_page.dart';
@@ -114,18 +116,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildHomePage() {
+    // fetch isDark from ThemeProvider
+    // Provider.of<ThemeProvider>(context).isDark will return true if it's dark mode
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
+
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color.fromRGBO(180, 225, 255, 1),
-            Color.fromRGBO(243, 255, 181, 1),
-            Colors.white,
-          ]
+          colors: isDarkTheme 
+            ? [
+              Color.fromRGBO(0, 68, 114, 1),
+              Colors.black,
+              Color.fromRGBO(49, 33, 70, 1),
+            ]
+            : [
+              Color.fromRGBO(180, 225, 255, 1),
+              Color.fromRGBO(243, 255, 181, 1),
+              Colors.white,
+            ]
         ),
       ),
       child: SingleChildScrollView(
@@ -178,14 +190,14 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: isSelected ? buttonActive : buttonInactive,
+                          color: isSelected ? buttonActive : Theme.of(context).cardColor,
                         ),
                         child: Center(
                           child: Text(
                             genres[index], 
                             style: TextStyle(
                               fontSize: 12, 
-                              color: isSelected ? Colors.white : Colors.black
+                              color: isSelected ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color
                             )
                           )
                         )
@@ -203,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                 if (!snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Colors.black),
+                      valueColor: AlwaysStoppedAnimation(Colors.grey),
                     ),
                   );
                 }
@@ -250,14 +262,23 @@ class _HomePageState extends State<HomePage> {
                             margin: EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x3F000000),
-                                  blurRadius: 4,
-                                  offset: Offset(4, 4),
-                                  spreadRadius: 0,
-                                ),
-                              ],
+                              boxShadow: isDarkTheme 
+                                ? [
+                                  BoxShadow(
+                                    color: Color.fromARGB(62, 255, 255, 255),
+                                    blurRadius: 4,
+                                    offset: Offset(4, 4),
+                                    spreadRadius: 0,
+                                  ),
+                                ]
+                                : [
+                                  BoxShadow(
+                                    color: Color.fromARGB(62, 0, 0, 0),
+                                    blurRadius: 4,
+                                    offset: Offset(4, 4),
+                                    spreadRadius: 0,
+                                  ),
+                                ],
                               image: DecorationImage(
                                 image: NetworkImage(story['coverUrl']),
                                 fit: BoxFit.cover,
@@ -292,7 +313,6 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
                             ),
                           ),
                         );
@@ -321,7 +341,7 @@ class _HomePageState extends State<HomePage> {
                 if (!snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Colors.black),
+                      valueColor: AlwaysStoppedAnimation(Colors.grey),
                     ),
                   );
                 }
@@ -395,14 +415,23 @@ class _HomePageState extends State<HomePage> {
                                               height: 170,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0x3F000000),
-                                                    blurRadius: 4,
-                                                    offset: Offset(2, 2),
-                                                    spreadRadius: 0,
-                                                  ),
-                                                ],
+                                                boxShadow: isDarkTheme 
+                                                  ? [
+                                                    BoxShadow(
+                                                      color: Color.fromARGB(62, 255, 255, 255),
+                                                      blurRadius: 4,
+                                                      offset: Offset(4, 4),
+                                                      spreadRadius: 0,
+                                                    ),
+                                                  ]
+                                                  : [
+                                                    BoxShadow(
+                                                      color: Color.fromARGB(62, 0, 0, 0),
+                                                      blurRadius: 4,
+                                                      offset: Offset(4, 4),
+                                                      spreadRadius: 0,
+                                                    ),
+                                                  ],
                                                 image: DecorationImage(
                                                   image: NetworkImage(story['coverUrl']),
                                                   fit: BoxFit.cover,
@@ -450,7 +479,7 @@ class _HomePageState extends State<HomePage> {
                 if (!snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Colors.black),
+                      valueColor: AlwaysStoppedAnimation(Colors.grey),
                     ),
                   );
                 }
@@ -517,14 +546,23 @@ class _HomePageState extends State<HomePage> {
                                               height: 170,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0x3F000000),
-                                                    blurRadius: 4,
-                                                    offset: Offset(2, 2),
-                                                    spreadRadius: 0,
-                                                  ),
-                                                ],
+                                                boxShadow: isDarkTheme 
+                                                  ? [
+                                                    BoxShadow(
+                                                      color: Color.fromARGB(62, 255, 255, 255),
+                                                      blurRadius: 4,
+                                                      offset: Offset(4, 4),
+                                                      spreadRadius: 0,
+                                                    ),
+                                                  ]
+                                                  : [
+                                                    BoxShadow(
+                                                      color: Color.fromARGB(62, 0, 0, 0),
+                                                      blurRadius: 4,
+                                                      offset: Offset(4, 4),
+                                                      spreadRadius: 0,
+                                                    ),
+                                                  ],
                                                 image: DecorationImage(
                                                   image: NetworkImage(story['coverUrl']),
                                                   fit: BoxFit.cover,
@@ -540,7 +578,7 @@ class _HomePageState extends State<HomePage> {
                                                   fontWeight: FontWeight.w900
                                                 ),
                                               )
-                                            )
+                                            ),
                                           ],
                                         ),
                                       ),

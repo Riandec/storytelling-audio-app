@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
 
 class PrivacyPage extends StatefulWidget {
   const PrivacyPage({super.key});
@@ -66,6 +68,8 @@ If you have any questions or concerns about this Privacy Policy, please contact 
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
+
     return Scaffold(
       bottomNavigationBar: SafeArea(
         child: Row(
@@ -74,7 +78,7 @@ If you have any questions or concerns about this Privacy Policy, please contact 
             ElevatedButton.icon(
               onPressed: (){}, 
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: isDarkTheme ? Color.fromRGBO(26, 26, 30, 1) : Colors.white,
                 foregroundColor: Color.fromRGBO(0, 85, 255, 1),
                 side: BorderSide(
                   color: Color.fromRGBO(0, 85, 255, 1),
@@ -197,10 +201,15 @@ If you have any questions or concerns about this Privacy Policy, please contact 
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.white.withOpacity(0.0),
-                      Colors.white,
-                    ],
+                    colors: isDarkTheme
+                      ? [
+                        Color.fromRGBO(26, 26, 30, 1).withOpacity(0.0),
+                        Color.fromRGBO(26, 26, 30, 1),
+                      ]
+                      : [
+                        Colors.white.withOpacity(0.0),
+                        Colors.white,
+                      ],
                     stops: const [0.0, 0.9], 
                   ),
                 ),

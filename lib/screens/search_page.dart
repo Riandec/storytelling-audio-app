@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
 import 'dart:async';
 import 'package:storytelling_audio_app/screens/story_details_page.dart';
 
@@ -103,6 +105,8 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -111,11 +115,17 @@ class _SearchPageState extends State<SearchPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(180, 225, 255, 1),
-              Color.fromRGBO(243, 255, 181, 1),
-              Colors.white,
-            ]
+            colors: isDarkTheme 
+              ? [
+                Color.fromRGBO(0, 68, 114, 1),
+                Colors.black,
+                Color.fromRGBO(49, 33, 70, 1),
+              ]
+              : [
+                Color.fromRGBO(180, 225, 255, 1),
+                Color.fromRGBO(243, 255, 181, 1),
+                Colors.white,
+              ]
           ),
         ),
         child: SafeArea(
@@ -138,12 +148,7 @@ class _SearchPageState extends State<SearchPage> {
                     }
                   },
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                     hintText: 'Enter the name of the story...',
-                    hintStyle: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFFB3B3B3)
-                    ),
                     prefixIcon: Icon(Icons.search),
                     suffixIcon: searchController.text.isNotEmpty 
                       ? IconButton(
@@ -156,16 +161,6 @@ class _SearchPageState extends State<SearchPage> {
                           } 
                         ) 
                       : null,
-                    filled: true,
-                    fillColor: Colors.white,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Color(0xFFB3B3B3)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Colors.black)
-                    )
                   ),
                 ),
                 SizedBox(height: 20),
@@ -191,7 +186,6 @@ class _SearchPageState extends State<SearchPage> {
                                   'Clear All',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black
                                   ),
                                 ),
                               ),
@@ -213,11 +207,12 @@ class _SearchPageState extends State<SearchPage> {
                                     padding: EdgeInsets.only(right: 1),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Color.fromRGBO(217, 217, 217, 1),
+                                      color: isDarkTheme
+                                      ? Colors.grey[900]
+                                      : Color.fromRGBO(217, 217, 217, 1)
                                     ),
                                     child: Icon(
                                       Icons.history,
-                                      color: Colors.black,
                                       size: 20
                                     ),
                                   ),
@@ -234,11 +229,12 @@ class _SearchPageState extends State<SearchPage> {
                                       height: 25,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Color.fromRGBO(217, 217, 217, 1),
+                                        color: isDarkTheme
+                                          ? Colors.grey[900]
+                                          : Color.fromRGBO(217, 217, 217, 1)
                                       ),
                                       child: Icon(
                                         Icons.clear,
-                                        color: Colors.black,
                                         size: 18
                                       ),
                                     ),
@@ -260,7 +256,7 @@ class _SearchPageState extends State<SearchPage> {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return Center(
                               child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(Colors.black)
+                                valueColor: AlwaysStoppedAnimation(Colors.grey)
                               )
                             );
                           }
@@ -270,7 +266,9 @@ class _SearchPageState extends State<SearchPage> {
                           }
                           return Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: isDarkTheme 
+                                ? Colors.grey[900] 
+                                : Colors.white,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: Colors.black)
                             ),

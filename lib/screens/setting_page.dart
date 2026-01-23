@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
 import 'package:storytelling_audio_app/screens/about_page.dart';
 import 'package:storytelling_audio_app/screens/faq_page.dart';
 import 'package:storytelling_audio_app/screens/privacy_page.dart';
@@ -17,6 +19,9 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -25,11 +30,17 @@ class _SettingPageState extends State<SettingPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(180, 225, 255, 1),
-              Color.fromRGBO(243, 255, 181, 1),
-              Colors.white,
-            ]
+            colors: isDarkTheme 
+              ? [
+                Color.fromRGBO(0, 68, 114, 1),
+                Colors.black,
+                Color.fromRGBO(49, 33, 70, 1),
+              ]
+              : [
+                Color.fromRGBO(180, 225, 255, 1),
+                Color.fromRGBO(243, 255, 181, 1),
+                Colors.white,
+              ]
           ),
         ),
         child: SafeArea(
@@ -44,10 +55,6 @@ class _SettingPageState extends State<SettingPage> {
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                     hintText: 'Enter the name of the story...',
-                    hintStyle: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFFB3B3B3)
-                    ),
                     prefixIcon: Icon(Icons.search),
                     suffixIcon: searchController.text.isNotEmpty 
                       ? IconButton(
@@ -57,21 +64,11 @@ class _SettingPageState extends State<SettingPage> {
                           } 
                         ) 
                       : null,
-                    filled: true,
-                    fillColor: Colors.white,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Color(0xFFB3B3B3)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Colors.black)
-                    )
                   ),
                 ),
                 SizedBox(height: 20),
                 ListTile(
-                  leading: Icon(Icons.notifications_none_rounded, color: Colors.black),
+                  leading: Icon(Icons.notifications_none_rounded),
                   title: Text(
                     'Notification',
                     style: TextStyle(
@@ -85,21 +82,12 @@ class _SettingPageState extends State<SettingPage> {
                         notiEnabled = value;
                       });
                     },
-                    inactiveThumbColor: Colors.white,
-                    activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                    inactiveTrackColor: Color.fromARGB(255, 213, 208, 214),
-                    trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return Colors.transparent;
-                      }
-                      return Colors.transparent;
-                    }),
                   ),
                   minTileHeight: 40,
                 ),
                 Divider(),
                 ListTile(
-                  leading: Icon(Icons.dark_mode_outlined, color: Colors.black),
+                  leading: Icon(Icons.dark_mode_outlined),
                   title: Text(
                     'Dark mode',
                     style: TextStyle(
@@ -107,21 +95,13 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ),
                   trailing: Switch(
-                    value: darkModeEnabled, 
+                    value: themeProvider.isDark, 
                     onChanged: (value){
                       setState(() {
                         darkModeEnabled = value;
                       });
+                      themeProvider.toggleTheme(value);
                     },
-                    inactiveThumbColor: Colors.white,
-                    activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                    inactiveTrackColor: Color.fromARGB(255, 213, 208, 214),
-                    trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return Colors.transparent;
-                      }
-                      return Colors.transparent;
-                    }),
                   ),
                   minTileHeight: 40,
                 ),
@@ -135,14 +115,14 @@ class _SettingPageState extends State<SettingPage> {
                       )
                     );
                   },
-                  leading: Icon(Icons.lock_outline_rounded, color: Colors.black),
+                  leading: Icon(Icons.lock_outline_rounded),
                   title: Text(
                     'Privacy and Security',
                     style: TextStyle(
                       letterSpacing: 1
                     ),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded, color: Colors.black, size: 22),
+                  trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
                   minTileHeight: 40,
                 ),
                 Divider(),
@@ -155,14 +135,14 @@ class _SettingPageState extends State<SettingPage> {
                       )
                     );
                   },
-                  leading: Icon(Icons.textsms_outlined, color: Colors.black),
+                  leading: Icon(Icons.textsms_outlined),
                   title: Text(
                     'Help and FAQ',
                     style: TextStyle(
                       letterSpacing: 1
                     ),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded, color: Colors.black, size: 22),
+                  trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
                   minTileHeight: 40,
                 ),
                 Divider(),
@@ -175,14 +155,14 @@ class _SettingPageState extends State<SettingPage> {
                       )
                     );
                   },
-                  leading: Icon(Icons.info_outline, color: Colors.black),
+                  leading: Icon(Icons.info_outline),
                   title: Text(
                     'About Us',
                     style: TextStyle(
                       letterSpacing: 1
                     ),
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded, color: Colors.black, size: 22),
+                  trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
                   minTileHeight: 40,
                 ),
                 Divider(),

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
 import 'package:storytelling_audio_app/screens/listening_page.dart';
 
 class CollectionPage extends StatefulWidget {
@@ -152,19 +154,27 @@ class _CollectionPageState extends State<CollectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
+    
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(180, 225, 255, 1),
-              Color.fromRGBO(243, 255, 181, 1),
-              Colors.white,
-            ]
+            colors: isDarkTheme
+              ? [
+                Color.fromRGBO(0, 68, 114, 1),
+                Colors.black,
+                Color.fromRGBO(49, 33, 70, 1),
+              ]
+              : [
+                Color.fromRGBO(180, 225, 255, 1),
+                Color.fromRGBO(243, 255, 181, 1),
+                Colors.white,
+              ]
           ),
         ),
         child: SingleChildScrollView(
@@ -194,7 +204,6 @@ class _CollectionPageState extends State<CollectionPage> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black
                         ),
                       ),
                       Text(
@@ -215,7 +224,6 @@ class _CollectionPageState extends State<CollectionPage> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black
                         ),
                       ),
                       Text(
@@ -236,7 +244,6 @@ class _CollectionPageState extends State<CollectionPage> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black
                         ),
                       ),
                       Text(
@@ -285,7 +292,9 @@ class _CollectionPageState extends State<CollectionPage> {
                                 height: 140,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  color: Color.fromRGBO(180, 225, 255, 1)
+                                  color: isDarkTheme 
+                                    ? Color.fromRGBO(0, 68, 114, 1) 
+                                    : Color.fromRGBO(180, 225, 255, 1)
                                 ),
                               ),
                               // cover image
@@ -309,14 +318,23 @@ class _CollectionPageState extends State<CollectionPage> {
                                     height: 154,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3F000000),
-                                          blurRadius: 4,
-                                          offset: Offset(0, 4),
-                                          spreadRadius: 0,
-                                        )
-                                      ]
+                                      boxShadow: isDarkTheme
+                                        ? [
+                                          BoxShadow(
+                                            color: Color.fromARGB(62, 255, 255, 255),
+                                            blurRadius: 4,
+                                            offset: Offset(0, 4),
+                                            spreadRadius: 0,
+                                          ),
+                                        ]
+                                        : [
+                                          BoxShadow(
+                                            color: Color.fromARGB(62, 0, 0, 0),
+                                            blurRadius: 4,
+                                            offset: Offset(0, 4),
+                                            spreadRadius: 0,
+                                          ),
+                                        ]
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
@@ -365,7 +383,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                           height: 5,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),
-                                            border: Border.all(color: Colors.black)
+                                            border: Border.all(color: isDarkTheme ? Colors.white : Colors.black)
                                           ),
                                         ),
                                         Container(
@@ -373,7 +391,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                           height: 5,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),
-                                            color: Colors.black
+                                            color: isDarkTheme ? Colors.white : Colors.black
                                           ),
                                         ),
                                       ],

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'package:storytelling_audio_app/api/firebase_message_api.dart';
 import 'package:storytelling_audio_app/screens/home_page.dart';
 import 'package:storytelling_audio_app/screens/setting_page.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
+import 'package:storytelling_audio_app/core/theme_data.dart';
 import 'firebase_options_loader.dart';
 
 void main() async {
@@ -13,9 +16,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseMessageApi().initNotifications();
-  await FirebaseMessaging.instance.subscribeToTopic('new_stories');
-  runApp(const MyApp());
+  // await FirebaseMessageApi().initNotifications();
+  // await FirebaseMessaging.instance.subscribeToTopic('new_stories');
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -23,15 +31,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        fontFamily: 'SF Pro',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true
-      ),
-      debugShowCheckedModeBanner: true,
-      home: HomePage(),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'Storytelling Audio App',
+          theme: themeProvider.currentTheme,
+          debugShowCheckedModeBanner: true,
+          home: HomePage(),
+        );
+      },
     );
   }
 }
