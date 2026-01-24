@@ -5,9 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:storytelling_audio_app/api/firebase_message_api.dart';
 import 'package:storytelling_audio_app/screens/home_page.dart';
-import 'package:storytelling_audio_app/screens/setting_page.dart';
 import 'package:storytelling_audio_app/core/theme_provider.dart';
-import 'package:storytelling_audio_app/core/theme_data.dart';
 import 'firebase_options_loader.dart';
 
 void main() async {
@@ -16,8 +14,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await FirebaseMessageApi().initNotifications();
-  // await FirebaseMessaging.instance.subscribeToTopic('new_stories');
+  await FirebaseMessageApi().initNotifications();
+  await FirebaseMessaging.instance.subscribeToTopic('new_stories');
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storytelling_audio_app/api/firebase_message_api.dart';
 import 'package:storytelling_audio_app/core/theme_provider.dart';
 import 'package:storytelling_audio_app/screens/about_page.dart';
 import 'package:storytelling_audio_app/screens/faq_page.dart';
@@ -16,6 +18,44 @@ class _SettingPageState extends State<SettingPage> {
   final searchController = SearchController();
   bool notiEnabled = false;
   bool darkModeEnabled = false;
+  final firebaseMessageApi = FirebaseMessageApi();
+
+  @override
+  void initState() {
+    super.initState();
+    loadNotification();
+  }
+
+  Future<void> loadNotification() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      notiEnabled = prefs.getBool('notiEnabled') ?? false;
+    });
+  }
+
+  Future<void> updateNotification(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (value == true) {
+      bool allow = await firebaseMessageApi.enableNotifications();
+      if (allow) {
+        setState(() {
+          notiEnabled = true;
+        });
+        await prefs.setBool('notiEnabled', true);
+      } else {
+        setState(() {
+          notiEnabled = false;
+        });
+        await prefs.setBool('notiEnabled', false);
+      }
+    } else {
+      await firebaseMessageApi.disableNotifications();
+      setState(() {
+        notiEnabled = false;
+      });
+      await prefs.setBool('notiEnabled', false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +117,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   trailing: Switch(
                     value: notiEnabled, 
-                    onChanged: (value){
-                      setState(() {
-                        notiEnabled = value;
-                      });
-                    },
+                    onChanged: updateNotification
                   ),
                   minTileHeight: 40,
                 ),

@@ -60,7 +60,8 @@ class _FAQPageState extends State<FAQPage> {
                 ),
                 child: Icon(
                   Icons.arrow_back_rounded, 
-                  size: 30
+                  color: Colors.white,
+                  size: 30,
                 )
               )
             ),
