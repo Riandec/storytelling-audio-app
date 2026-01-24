@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:storytelling_audio_app/core/theme_provider.dart';
 import 'package:storytelling_audio_app/screens/rating_page.dart';
 
 class ListeningPage extends StatefulWidget {
@@ -297,7 +295,6 @@ class _ListeningPageState extends State<ListeningPage> {
   Widget build(BuildContext context) {
     int totalPages = widget.storyData['content'].length;
     String language = languageSelected[0] ? 'en' : 'th';
-    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
 
     return Scaffold(
       body: Stack(

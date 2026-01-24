@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytelling_audio_app/core/theme_provider.dart';
 import 'dart:async';
 import 'package:storytelling_audio_app/screens/story_details_page.dart';
@@ -27,6 +28,7 @@ class _SearchPageState extends State<SearchPage> {
     searchController.addListener((){
       setState(() {});
     });
+    loadSearchHistory();
   }
 
   @override
@@ -77,7 +79,6 @@ class _SearchPageState extends State<SearchPage> {
   LATEST SEARCH
 
   */
-  // add to latest search
   void addToLatestSearch(String keyword) {
     if (keyword.trim().isEmpty) return;
     setState(() {
@@ -87,6 +88,7 @@ class _SearchPageState extends State<SearchPage> {
         latestSearches = latestSearches.sublist(0, maxSearch);
       }
     });
+    saveSearchHistory();
   }
 
   // remove one search
@@ -94,13 +96,32 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       latestSearches.remove(keyword);
     });
+    saveSearchHistory();
   }
 
-  // clear all search
   void clearAllSearches() {
     setState(() {
       latestSearches.clear();
     });
+    saveSearchHistory();
+  }
+
+  /*
+
+  SEARCH HISTORY
+
+  */
+  Future<void> loadSearchHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? history = prefs.getStringList('searchHistory') ?? [];
+    setState(() {
+      latestSearches = history;
+    });
+  }
+
+  Future<void> saveSearchHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('searchHistory', latestSearches);
   }
 
   @override

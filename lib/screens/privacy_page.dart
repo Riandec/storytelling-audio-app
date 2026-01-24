@@ -26,8 +26,10 @@ Our application is designed to be used without registration or user accounts. Th
         - Stories saved to your personal library.
         - Ratings given to each story.
         - Listening progress for each story.
+        -	Recent search history.
 1.2.  Technical Data
-        - Device theme and language settings.
+        -	Device theme and notification settings.
+        -	Consent to the application's privacy policy.
         - Crash reports in the event of an application failure.
 '''
     },
