@@ -14,8 +14,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await FirebaseMessageApi().initNotifications();
-  // await FirebaseMessaging.instance.subscribeToTopic('new_stories');
+  await FirebaseMessageApi().initNotifications();
+  await FirebaseMessaging.instance.subscribeToTopic('new_stories');
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),

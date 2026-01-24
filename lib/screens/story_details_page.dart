@@ -377,57 +377,32 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
             bottom: 70,
             left: 47,
             right: 45,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: (){}, 
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black.withOpacity(0.4),
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                    )
-                  ),
-                  icon: Icon(Icons.remove_red_eye_outlined),
-                  label: Text(
-                    'Preview',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1
-                    ),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: (){
-                    Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => ListeningPage(storyId: widget.storyId , storyData: widget.storyData)
-                      )
-                    );
-                  }, 
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromRGBO(0, 85, 255, 1),
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                    )
-                  ),
-                  icon: Icon(CupertinoIcons.ear),
-                  label: Text(
-                    'Listen',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1
-                    ),
-                  ),
+            child: ElevatedButton.icon(
+              onPressed: (){
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (context) => ListeningPage(storyId: widget.storyId , storyData: widget.storyData)
+                  )
+                );
+              }, 
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)
                 )
-              ],
+              ),
+              icon: Icon(CupertinoIcons.ear),
+              label: Text(
+                'Listen',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1
+                ),
+              ),
             )
           ),
 
