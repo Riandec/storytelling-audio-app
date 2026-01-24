@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // LIGHT THEME
 ThemeData lightTheme = ThemeData.light().copyWith(
   scaffoldBackgroundColor: Colors.white,
+  cardColor: Colors.white,
   textTheme: ThemeData.light().textTheme.apply(
     bodyColor: Colors.black,
     displayColor: Colors.black,
@@ -62,6 +63,7 @@ ThemeData lightTheme = ThemeData.light().copyWith(
 // DARK THEME
 ThemeData darkTheme = ThemeData.dark().copyWith(
   scaffoldBackgroundColor: Color.fromRGBO(26, 26, 30, 1),
+  cardColor: Color.fromRGBO(26, 26, 30, 1),
   textTheme: ThemeData.light().textTheme.apply(
     bodyColor: Colors.white,
     displayColor: Colors.white,

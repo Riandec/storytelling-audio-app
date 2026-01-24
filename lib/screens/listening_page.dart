@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
 import 'package:storytelling_audio_app/screens/rating_page.dart';
 
 class ListeningPage extends StatefulWidget {
@@ -295,6 +297,8 @@ class _ListeningPageState extends State<ListeningPage> {
   Widget build(BuildContext context) {
     int totalPages = widget.storyData['content'].length;
     String language = languageSelected[0] ? 'en' : 'th';
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
+
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -391,7 +395,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                 height: 500,
                                 width: 380,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.5),
+                                  color: Theme.of(context).cardColor.withOpacity(0.5),
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(25),
                                     topRight: Radius.circular(25),
@@ -401,7 +405,7 @@ class _ListeningPageState extends State<ListeningPage> {
                               Container(
                                 height: 485,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context).cardColor,
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(25),
                                     topRight: Radius.circular(25),
@@ -426,14 +430,6 @@ class _ListeningPageState extends State<ListeningPage> {
                                               });
                                               setState(() {});
                                             },
-                                            inactiveThumbColor: Colors.white,
-                                            activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                                            trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-                                              if (states.contains(WidgetState.selected)) {
-                                                return Colors.transparent;
-                                              }
-                                              return Colors.transparent;
-                                            }),
                                           )
                                         ],
                                       ),
@@ -446,7 +442,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                             child: Text(
                                               'Language',
                                               style: TextStyle(
-                                                color: subtitleEnabled ? Colors.black : Colors.grey[400],
+                                                color: subtitleEnabled ? Theme.of(context).textTheme.bodyMedium?.color : Colors.grey[400],
                                               ),
                                             ),
                                           ),
@@ -491,7 +487,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                             child: Text(
                                               'Font Size',
                                               style: TextStyle(
-                                                color: subtitleEnabled ? Colors.black : Colors.grey[400],
+                                                color: subtitleEnabled ? Theme.of(context).textTheme.bodyMedium?.color : Colors.grey[400],
                                               ),
                                             ),
                                           ),
@@ -501,7 +497,6 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 data: SliderTheme.of(context).copyWith(
                                                   activeTrackColor: subtitleEnabled ? Color.fromRGBO(0, 85, 255, 1) : Colors.grey[400],
                                                   thumbColor: subtitleEnabled ? Color.fromRGBO(0, 85, 255, 1) : Colors.grey[400],
-                                                  inactiveTrackColor: Colors.grey[400]
                                                 ), 
                                                 child: Slider(
                                                   value: fontSize, 
@@ -523,7 +518,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 fontSize == 0 ? 'Small' : fontSize == 1 ? 'Medium' : 'Large', 
                                                 style: TextStyle(
                                                   fontSize: 12,
-                                                  color: subtitleEnabled ? Colors.black : Colors.grey[400]
+                                                  color: subtitleEnabled ? Theme.of(context).textTheme.bodyMedium?.color : Colors.grey[400],
                                                 ),
                                               )
                                             ],
@@ -625,14 +620,6 @@ class _ListeningPageState extends State<ListeningPage> {
                                               });
                                               setState(() {});
                                             },
-                                            inactiveThumbColor: Colors.white,
-                                            activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                                            trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-                                              if (states.contains(WidgetState.selected)) {
-                                                return Colors.transparent;
-                                              }
-                                              return Colors.transparent;
-                                            }),
                                           )
                                         ],
                                       ),
@@ -655,14 +642,6 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 cancelTimer();
                                               }
                                             },
-                                            inactiveThumbColor: Colors.white,
-                                            activeTrackColor: Color.fromRGBO(0, 85, 255, 1),
-                                            trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-                                              if (states.contains(WidgetState.selected)) {
-                                                return Colors.transparent;
-                                              }
-                                              return Colors.transparent;
-                                            }),
                                           )
                                         ],
                                       ),
@@ -675,7 +654,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                             child: Text(
                                               'Set Time',
                                               style: TextStyle(
-                                                color: sleepModeEnabled ? Colors.black : Colors.grey[400]
+                                                color: sleepModeEnabled ? Theme.of(context).textTheme.bodyMedium?.color : Colors.grey[400]
                                               ),
                                             ),
                                           ),
@@ -687,7 +666,7 @@ class _ListeningPageState extends State<ListeningPage> {
                                                 child: Text(
                                                   '$minutes minutes',
                                                   style: TextStyle(
-                                                    color: sleepModeEnabled ? Colors.black : Colors.grey[400]
+                                                    color: sleepModeEnabled ? Theme.of(context).textTheme.bodyMedium?.color : Colors.grey[400]
                                                   ),
                                                 )
                                               );

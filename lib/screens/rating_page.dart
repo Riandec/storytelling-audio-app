@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storytelling_audio_app/core/theme_provider.dart';
 
 class RatingPage extends StatefulWidget {
   final String storyId;
@@ -72,19 +74,27 @@ class _RatingPageState extends State<RatingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(180, 225, 255, 1),
-              Color.fromRGBO(243, 255, 181, 1),
-              Colors.white,
-            ]
+            colors: isDarkTheme 
+              ? [
+                Color.fromRGBO(0, 68, 114, 1),
+                Colors.black,
+                Color.fromRGBO(49, 33, 70, 1),
+              ]
+              : [
+                Color.fromRGBO(180, 225, 255, 1),
+                Color.fromRGBO(243, 255, 181, 1),
+                Colors.white,
+              ]
           ),
         ),
         child: Column(
