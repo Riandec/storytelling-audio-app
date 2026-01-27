@@ -41,6 +41,8 @@ class _ListeningPageState extends State<ListeningPage> {
   @override
   void initState() {
     super.initState();
+    player.setReleaseMode(ReleaseMode.stop);
+    player.setPlayerMode(PlayerMode.mediaPlayer);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         preCacheImages();
@@ -122,7 +124,7 @@ class _ListeningPageState extends State<ListeningPage> {
     try {
       String audioUrl = widget.storyData['content'][currentPage]['audioUrl'];
       await player.stop();
-      await player.setSource(UrlSource(audioUrl));
+      await player.setSourceUrl(audioUrl);
       await player.setVolume(volume / 100);
       await player.setPlaybackRate(speed / 2);
       await player.resume();
@@ -161,7 +163,7 @@ class _ListeningPageState extends State<ListeningPage> {
       // load audio of this page
       try {
         String audioUrl = widget.storyData['content'][currentPage]['audioUrl'];
-        await player.setSource(UrlSource(audioUrl));
+        await player.setSourceUrl(audioUrl);
         await player.setVolume(volume / 100);
         await player.setPlaybackRate(speed / 2);
         await player.seek(Duration(seconds: targetPosition));
