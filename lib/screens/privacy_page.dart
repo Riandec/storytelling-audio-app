@@ -48,20 +48,22 @@ We use the information we collect for the following purposes:
 This application is designed for children to use safely under parental supervision. We do not knowingly collect personally identifiable information from children. If you are a parent or guardian and you believe that your child has provided us with any information without your consent, please contact us so we can take steps to remove that information.
 '''
     },
+    /*
     {
       'header': '4.     Your Choices and Controls',
       'body': '''
 You can control the sharing of anonymous usage data by selecting the “Decline” button below.
 '''
     },
+    */
     {
-      'header': '5.     Changes to This Privacy Policy',
+      'header': '4.     Changes to This Privacy Policy',
       'body': '''
 We may update this policy in the future. If we make any significant changes, we will notify you through an appropriate channel within the application.
 '''
     },
     {
-      'header': '6.     Contact Us',
+      'header': '5.     Contact Us',
       'body': '''
 If you have any questions or concerns about this Privacy Policy, please contact the developer at storytellingaudio3@gmail.com.
 '''
@@ -73,6 +75,7 @@ If you have any questions or concerns about this Privacy Policy, please contact 
     final bool isDarkTheme = Provider.of<ThemeProvider>(context).isDark;
 
     return Scaffold(
+      /*
       bottomNavigationBar: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -124,6 +127,7 @@ If you have any questions or concerns about this Privacy Policy, please contact 
           ],
         ),
       ),
+      */
       body: Stack(
         children: [
           SingleChildScrollView(

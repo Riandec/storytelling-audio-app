@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Storytelling Audio App',
           theme: themeProvider.currentTheme,
-          debugShowCheckedModeBanner: true,
+          debugShowCheckedModeBanner: false,
           home: HomePage(),
         );
       },
