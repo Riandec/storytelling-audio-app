@@ -12,7 +12,7 @@ class _AboutPageState extends State<AboutPage> {
     {
       'header': '',
       'body': '''
-[App Name] aims to make a storytelling audio easily accessible for every child. Each story features beautiful illustrations, English narration, and Thai subtitles to help children develop bilingual and communication skills. Our goal is to foster a love for reading, improve concentration, and spark imagination through wholesome stories filled with moral values.
+KidsListen Application aims to make a storytelling audio easily accessible for every child. Each story features beautiful illustrations, English narration, and Thai subtitles to help children develop bilingual and communication skills. Our goal is to foster a love for reading, improve concentration, and spark imagination through wholesome stories filled with moral values.
 '''
     },
     {

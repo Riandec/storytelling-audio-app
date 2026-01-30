@@ -290,7 +290,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                           ),
                           SizedBox(width: 10),
                           Text(
-                            '${widget.storyData['timing']} mins',
+                            '${widget.storyData['timing']} ${widget.storyData['timing'] == 1 ? "min" : "mins"}',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -308,7 +308,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                           ),
                           SizedBox(width: 10),
                           Text(
-                            '${widget.storyData['ratingCount']} reads',
+                            '${widget.storyData['ratingCount']} ${widget.storyData['ratingCount'] == 1 ? "listen" : "listens"}',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -326,7 +326,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                           ),
                           SizedBox(width: 10),
                           Text(
-                            '${widget.storyData['likeCount']} likes',
+                            '${widget.storyData['likeCount']} ${widget.storyData['likeCount'] == 1 ? "like" : "likes"}',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

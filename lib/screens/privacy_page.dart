@@ -11,11 +11,11 @@ class PrivacyPage extends StatefulWidget {
 
 class _PrivacyPageState extends State<PrivacyPage> {
     final String title = '''
-For the [App Name] Application 
-Effective as of [Date Month Year]
+For the KidsListen Application 
+Effective as of 1 February 2026
 ''';
   final String intro = '''
-Thank you for using [App Name], which is part of a thesis project for the Department of Computer Science, Faculty of Science, Silpakorn University. This Privacy Policy is designed to explain how we collect, use, and manage the information we receive from your use of the application.
+Thank you for using KidsListen application, which is part of a thesis project for the Department of Computer Science, Faculty of Science, Silpakorn University. This Privacy Policy is designed to explain how we collect, use, and manage the information we receive from your use of the application.
 ''';
   final List<Map<String, String>> sections = [
     {
