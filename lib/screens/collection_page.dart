@@ -379,7 +379,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                     Stack(
                                       children: [
                                         Container(
-                                          width: 190,
+                                          width: MediaQuery.of(context).size.width * 0.42,
                                           height: 5,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),
@@ -387,7 +387,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                           ),
                                         ),
                                         Container(
-                                          width: 190 * (storyProgress[story['documentId']]?['percent'] ?? 0) / 100,
+                                          width: (MediaQuery.of(context).size.width * 0.42) * (storyProgress[story['documentId']]?['percent'] ?? 0) / 100,
                                           height: 5,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),

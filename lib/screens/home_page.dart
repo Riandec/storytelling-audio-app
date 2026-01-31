@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   final List<double> labelDx = [0, 0, 0, 0]; // + move to the right, - move to the left
   final double labelDy = 0; // + move down, - move up
   // genres list
-  final List<String> genres = const ['All', 'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Inspirational', 'Strategy', 'Thriller'];
+  final List<String> genres = const ['All', 'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Fable', 'Inspirational', 'Strategy'];
   // star color
   final Color starActive = Color.fromRGBO(255, 227, 71, 1);
   final Color starInactive = Color.fromRGBO(217, 217, 217, 1);
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 25),
             // genre selection
             Padding(
               padding: EdgeInsets.only(left: 20),
@@ -207,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               )
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 25),
             // all stories
             StreamBuilder<QuerySnapshot>(
               stream: stories.snapshots(),
@@ -361,7 +361,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         // recommended title
                         Padding(
-                          padding: EdgeInsets.only(top: 20, left: 20),
+                          padding: EdgeInsets.only(top: 10, left: 20),
                           child: Text(
                             "A story you haven't finish",
                             style: TextStyle(
@@ -489,7 +489,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     // popular title
                     Padding(
-                      padding: EdgeInsets.only(top: 20, left: 20),
+                      padding: EdgeInsets.only(top: 10, left: 20),
                       child: Text(
                         "Most Popular",
                         style: TextStyle(
@@ -520,6 +520,7 @@ class _HomePageState extends State<HomePage> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
+                              clipBehavior: Clip.none,
                               itemCount: data.length > 3 ? 3 : data.length,
                               itemBuilder: (context, index) {
                                 final doc = data[index];

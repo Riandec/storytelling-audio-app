@@ -200,9 +200,9 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
           ),
           // details 
           Positioned(
-            top: 420,
-            left: 40,
-            right: 40,
+            top: MediaQuery.of(context).size.height * 0.45,
+            left: 30,
+            right: 30,
             child: Column(
               children: [
                 // title
@@ -223,7 +223,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 13),
                 // genres and rating
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -268,7 +268,7 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 13),
                 // stats
                 Container(
                   height: 35,
@@ -343,9 +343,9 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
           ),
           // about
           Positioned(
-            top: 615,
-            left: 40,
-            right: 40,
+            top: MediaQuery.of(context).size.height * 0.675,
+            left: 30,
+            right: 30,
             child: Text(
               'About ${widget.storyData['title']}',
               style: TextStyle(
@@ -356,9 +356,9 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
             ),
           ),
           Positioned(
-            top: 642,
-            left: 40,
-            right: 40,
+            top: MediaQuery.of(context).size.height * 0.705,
+            left: 30,
+            right: 30,
             child: SizedBox(
               child: Text(
                 widget.storyData['outline'],
@@ -374,9 +374,9 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
           ),
           // button
           Positioned(
-            bottom: 70,
-            left: 47,
-            right: 45,
+            bottom: 50,
+            left: 50,
+            right: 50,
             child: ElevatedButton.icon(
               onPressed: (){
                 Navigator.push(
@@ -454,12 +454,3 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
     );
   }
 }
-
-/*
-
-Unfinished
-
-- timing
-- preview
-
-*/
