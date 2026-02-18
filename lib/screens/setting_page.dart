@@ -83,128 +83,116 @@ class _SettingPageState extends State<SettingPage> {
               ]
           ),
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // search bar
-                TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                    hintText: 'Enter the name of the story...',
-                    prefixIcon: Icon(Icons.search),
-                    suffixIcon: searchController.text.isNotEmpty 
-                      ? IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            searchController.clear();
-                          } 
-                        ) 
-                      : null,
+        child: Padding(
+          padding: EdgeInsets.only(top: 70, left: 20, right: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Settings',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              SizedBox(height: 25),
+              ListTile(
+                leading: Icon(Icons.notifications_none_rounded),
+                title: Text(
+                  'Notification',
+                  style: TextStyle(
+                    letterSpacing: 1
                   ),
                 ),
-                SizedBox(height: 20),
-                ListTile(
-                  leading: Icon(Icons.notifications_none_rounded),
-                  title: Text(
-                    'Notification',
-                    style: TextStyle(
-                      letterSpacing: 1
-                    ),
-                  ),
-                  trailing: Switch(
-                    value: notiEnabled, 
-                    onChanged: updateNotification
-                  ),
-                  minTileHeight: 40,
+                trailing: Switch(
+                  value: notiEnabled, 
+                  onChanged: updateNotification
                 ),
-                Divider(),
-                ListTile(
-                  leading: Icon(Icons.dark_mode_outlined),
-                  title: Text(
-                    'Dark mode',
-                    style: TextStyle(
-                      letterSpacing: 1
-                    ),
+                minTileHeight: 40,
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.dark_mode_outlined),
+                title: Text(
+                  'Dark mode',
+                  style: TextStyle(
+                    letterSpacing: 1
                   ),
-                  trailing: Switch(
-                    value: themeProvider.isDark, 
-                    onChanged: (value){
-                      setState(() {
-                        darkModeEnabled = value;
-                      });
-                      themeProvider.toggleTheme(value);
-                    },
-                  ),
-                  minTileHeight: 40,
                 ),
-                Divider(),
-                ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PrivacyPage()
-                      )
-                    );
+                trailing: Switch(
+                  value: themeProvider.isDark, 
+                  onChanged: (value){
+                    setState(() {
+                      darkModeEnabled = value;
+                    });
+                    themeProvider.toggleTheme(value);
                   },
-                  leading: Icon(Icons.lock_outline_rounded),
-                  title: Text(
-                    'Privacy and Security',
-                    style: TextStyle(
-                      letterSpacing: 1
-                    ),
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
-                  minTileHeight: 40,
                 ),
-                Divider(),
-                ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FAQPage()
-                      )
-                    );
-                  },
-                  leading: Icon(Icons.textsms_outlined),
-                  title: Text(
-                    'Help and FAQ',
-                    style: TextStyle(
-                      letterSpacing: 1
-                    ),
+                minTileHeight: 40,
+              ),
+              Divider(),
+              ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PrivacyPage()
+                    )
+                  );
+                },
+                leading: Icon(Icons.lock_outline_rounded),
+                title: Text(
+                  'Privacy and Security',
+                  style: TextStyle(
+                    letterSpacing: 1
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
-                  minTileHeight: 40,
                 ),
-                Divider(),
-                ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AboutPage()
-                      )
-                    );
-                  },
-                  leading: Icon(Icons.info_outline),
-                  title: Text(
-                    'About Us',
-                    style: TextStyle(
-                      letterSpacing: 1
-                    ),
+                trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
+                minTileHeight: 40,
+              ),
+              Divider(),
+              ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FAQPage()
+                    )
+                  );
+                },
+                leading: Icon(Icons.textsms_outlined),
+                title: Text(
+                  'Help and FAQ',
+                  style: TextStyle(
+                    letterSpacing: 1
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
-                  minTileHeight: 40,
                 ),
-                Divider(),
-              ],
-            )
-          ),
+                trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
+                minTileHeight: 40,
+              ),
+              Divider(),
+              ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AboutPage()
+                    )
+                  );
+                },
+                leading: Icon(Icons.info_outline),
+                title: Text(
+                  'About Us',
+                  style: TextStyle(
+                    letterSpacing: 1
+                  ),
+                ),
+                trailing: Icon(Icons.arrow_forward_ios_rounded, size: 22),
+                minTileHeight: 40,
+              ),
+              Divider(),
+            ],
+          )
         )
       ),
     );
