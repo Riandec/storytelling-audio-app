@@ -337,40 +337,32 @@ class _StoryDetailsPageState extends State<StoryDetailsPage> {
                       ),
                     ],
                   ),
-                ),          
+                ),
+                SizedBox(height: 13),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'About ${widget.storyData['title']}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black
+                    ),
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  widget.storyData['outline'],
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black
+                  ),
+                  maxLines: 7,
+                  overflow: TextOverflow.ellipsis
+                ),
               ],
             )
-          ),
-          // about
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.675,
-            left: 30,
-            right: 30,
-            child: Text(
-              'About ${widget.storyData['title']}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black
-              ),
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.705,
-            left: 30,
-            right: 30,
-            child: SizedBox(
-              child: Text(
-                widget.storyData['outline'],
-                textAlign: TextAlign.justify,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black
-                ),
-                maxLines: 8,
-                overflow: TextOverflow.ellipsis
-              ),
-            ),
           ),
           // button
           Positioned(

@@ -151,7 +151,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(30),
+            padding: EdgeInsets.all(25),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
