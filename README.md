@@ -9,7 +9,7 @@ The system is composed of two main parts
 ### App Preview
 | User Mobile Preview | Admin Web Preview |
 |:---:|:---:|
-| <img src="assets/images/mobile-preview.gif" alt="User Mobile Preview" height="250px"> | <img src="assets/images/web-preview.gif" alt="Admin Web Preview" height="240px"> |
+| <img src="assets/images/mobile-preview.gif" alt="User Mobile Preview" height="300px"> | <img src="assets/images/web-preview.gif" alt="Admin Web Preview" height="290px"> |
 
 ### Features
 #### User
