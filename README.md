@@ -7,8 +7,9 @@ The system is composed of two main parts
 * User Mobile Application: An app designed for users to browse, select, and listen to a library of audio stories.
 
 ### App Preview
-![User Mobile Preview](<img src="assets/images/mobile preview.gif" width="150px">) <br>
-![Admin Web Preview](<img src="assets/images/web preview.gif" width="150px">)
+| User Mobile Preview | Admin Web Preview |
+|:---:|:---:|
+| <img src="assets/images/mobile-preview.gif" alt="User Mobile Preview" height="250px"> | <img src="assets/images/web-preview.gif" alt="Admin Web Preview" height="240px"> |
 
 ### Features
 #### User
@@ -22,3 +23,14 @@ The system is composed of two main parts
 * Easily create, search, update, and delete story content
 * Automatically synthesizes story content into an audio file
 * A user-friendly GUI allows admins to apply SSML tags (e.g. changing pitch, emphasis, speed, etc.) by simply highlighting text, making it easy to create expressive audio without technical skills
+
+### Tech Stack
+* Flutter Framework / Dart Language
+* Google Cloud Text-to-Speech API
+* Firebase
+* Visual Studio Code
+* Android Studio
+
+### Built by
+1. Pitchaya Pimmahasiri - Responsible for mobile app development
+2. Siriwan Singlor - Responsible for web app development
