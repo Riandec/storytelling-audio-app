@@ -1,10 +1,12 @@
 # Storytelling Audio Application
 
+**This repository contains only the mobile app code**
+
 This project is a storytelling audio application, developed as my senior thesis. It leverages Text-to-Speech technology to create a system that simplifies and reduces the cost of producing audio stories compared to traditional methods.
 
 The system is composed of two main parts
-* Admin Web Application: A platform for administrators to manage story content and synthesize speech.
-* User Mobile Application: An app designed for users to browse, select, and listen to a library of audio stories.
+* Admin Web Application: A platform for administrators to manage story content and synthesize speech
+* User Mobile Application: An app designed for users to browse, select, and listen to a library of audio stories
 
 ### App Preview
 | User Mobile Preview | Admin Web Preview |
