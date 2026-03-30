@@ -10,6 +10,7 @@ import 'insert_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class StorySection {
   TextEditingController enController = TextEditingController();
@@ -67,7 +68,7 @@ class _UpdateStoryPageState extends State<UpdatePage> {
   final ImagePicker _picker = ImagePicker();
   bool _isUploading = false;
 
-  final String _googleApiKey = "AIzaSyAc7hw8Y-A1ioaMe0WROmFJU5T0gx8IfPQ";
+  final String _googleApiKey = dotenv.env['GOOGLE_API_KEY']!;
   final AudioPlayer _previewPlayer = AudioPlayer();
 
   @override
