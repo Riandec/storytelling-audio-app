@@ -1,7 +1,5 @@
 # Storytelling Audio Application
 
-**This repository contains only the mobile app code**
-
 This project is a storytelling audio application, developed as my senior thesis. It leverages Text-to-Speech technology to create a system that simplifies and reduces the cost of producing audio stories compared to traditional methods.
 
 The system is composed of two main parts
@@ -11,7 +9,7 @@ The system is composed of two main parts
 ### App Preview
 | User Mobile Preview | Admin Web Preview |
 |:---:|:---:|
-| <img src="assets/images/mobile-preview.gif" alt="User Mobile Preview" height="300px"> | <img src="assets/images/web-preview.gif" alt="Admin Web Preview" height="290px"> |
+| <img src="storytelling_audio_app/assets/images/mobile-preview.gif" alt="User Mobile Preview" height="300px"> | <img src="storytelling_audio_app/assets/images/web-preview.gif" alt="Admin Web Preview" height="290px"> |
 
 ### Features
 #### User
